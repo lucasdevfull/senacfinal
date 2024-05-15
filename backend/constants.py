@@ -1,0 +1,5 @@
+DEBUG_MESSAGE = '<div class="bg-blue-500 text-white p-4"></div>'
+ERROR_MESSAGE = '<div class="bg-red-500 text-white p-4"></div>'
+SUCCESS_MESSAGE = '<div class="bg-green-500 text-white p-4"></div>'
+INFO_MESSAGE = '<div class="bg-gray-500 text-white p-4"></div>'
+WARNING_MESSAGE = '<div class="bg-yellow-500 text-black p-4"></div>'

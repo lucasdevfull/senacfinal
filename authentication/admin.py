@@ -1,23 +1,26 @@
+from django.contrib.auth import admin as admin_auth
 from django.contrib import admin
-from .models import Pessoa,Cargo,Pedido
+from .models import User
+from .forms import UserChangeForm,UserCreationForm
 
 # Register your models here.
-class PedidoInline(admin.TabularInline):
-    readonly_fields = ('nome','quantidade','descricao',)
-    list_display = ('nome','email','descricao')
-    model = Pedido
-    extra = 0
-@admin.register(Pessoa)
-class PessoaAdmin(admin.ModelAdmin):
-    inlines = [PedidoInline]
-    list_display = ('nome','email','cargo','nome_completo',) #o q aparece
-    readonly_fields = ('senha','cargo',) #leitura
-    search_fields = ('nome',) #pesquisa
-    list_filter = ('cargo',) #filtro
-    #list_editable = ('nome',) edito sem entrar em outra página
-
-@admin.register(Cargo)
-class CargoAdmin(admin.ModelAdmin):
-    list_filter = ('cargo',)
-
-
+@admin.register(User)
+class UserAdmin(admin_auth.UserAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+    model = User
+    fieldsets = admin_auth.UserAdmin.fieldsets + (
+        ('Informações adicionais', 
+         {'fields': (
+             'data_nascimento',
+                     'genero',
+                     'telefone',
+                     'pais',
+                     'cidade',
+                     'endereco',
+                     'cep'
+                     )
+            }
+        ),
+    )
+    
