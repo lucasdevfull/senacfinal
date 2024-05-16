@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #apps
     'authentication',
+    'app',
     #........
 ]
 X_FRAME_OPTIONS = "SAMEORIGIN"
