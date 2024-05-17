@@ -1,4 +1,3 @@
-from typing import Any
 from django.db import models
 from django.apps import apps
 from django.contrib.auth.models import AbstractUser ,UserManager as BaseUserManager
@@ -12,10 +11,7 @@ class UserManager(BaseUserManager):
         
         email = self.normalize_email(email)
       
-        GlobalUserModel = apps.get_model(
-            self.model._meta.app_label, self.model._meta.object_name
-        )
-        username = GlobalUserModel.normalize_username(username)
+       
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
