@@ -1,6 +1,5 @@
 from django.shortcuts import render,redirect
 from .models import User
-from .backend import MyBackend
 from django.urls import reverse
 from django.http import HttpResponse,HttpRequest
 from django.contrib import auth
@@ -8,6 +7,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 
 # Create your views here.
+
 def register(request:HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         template_name = "registration/cadastro.html"
@@ -22,15 +22,14 @@ def register(request:HttpRequest) -> HttpResponse:
 
         if users.exists():
             messages.add_message(request,constants.ERROR,'Usuário já existente')
-            return redirect(reverse(login))
+            return redirect(reverse('login'))
         try:
             users=User.objects.create_user(username=username,email=email,password=confirm_password)
             messages.add_message(request,constants.SUCCESS,'Usuário criado com sucesso')
-            return redirect(reverse(login))
+            return redirect(reverse('login'))
         except:
             messages.add_message(request, constants.ERROR,'Erro interno no servidor')
-            return redirect(reverse(register)) 
-
+            return redirect(reverse('register')) 
 def login(request:HttpRequest) -> HttpResponse:
     if request.method == 'GET':
     
@@ -41,13 +40,12 @@ def login(request:HttpRequest) -> HttpResponse:
         username = request.POST.get('name')
         password = request.POST.get('password')
 
-        
         users =auth.authenticate(request,username=username,password=password)
         
         if users:
             auth.login(request,users)
-            return redirect('/home/dashboard')
+            return redirect(reverse('home'))
         messages.add_message(request,constants.ERROR,'Username ou senha inválidos')
-        return redirect(reverse(login))
+        return redirect(reverse('login'))
 
 
