@@ -6,19 +6,19 @@ from django.db import transaction
 from .models import Produto
 # Create your views here.
 def home(request):
-    template_name ='home.html'
+    template_name ='products/home.html'
     return render(request,template_name)
 
 def listar_produto(request):
     if request.method == 'GET':
         produto = Produto.objects.all()
-        template_name = 'produtos/listar_produto.html'
+        template_name = 'products/listar_produto.html'
         context = {'produto':produto}
         return render(request,template_name,context)
 
 def adicionar_produto(request):
     if request.method == 'GET':
-        template_name = 'adicionar_produto.html' 
+        template_name = 'products/adicionar_produto.html' 
         return render(request,template_name)
     elif request.method == 'POST':
         nome_produto = request.POST.get('produto')
@@ -29,13 +29,14 @@ def adicionar_produto(request):
 
         with transaction.atomic():
             try:
-                produtos=Produto(user = request.user,
-                                nome_produto = nome_produto,
-                                descricao = descricao,
-                                preco = preco,
-                                fabricante = fabricante,
-                                categoria = categoria
-                                )
+                produtos=Produto(
+                    user = request.user,
+                    nome_produto = nome_produto,
+                    descricao = descricao,
+                    preco = preco,
+                    fabricante = fabricante,
+                    categoria = categoria
+                    )
                 produtos.save()
             except:
                 messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!')
@@ -45,7 +46,7 @@ def adicionar_produto(request):
 
 def editar_produto(request,produto_id):
     produto = get_object_or_404(Produto,id=produto_id)
-    template_name = 'produtos/editar_produto.html'
+    template_name = 'products/editar_produto.html'
     context = {'produto':produto}
     if request.method == 'POST':
         produto.nome_produto = request.POST.get('produto')
@@ -59,7 +60,7 @@ def editar_produto(request,produto_id):
 
 def deletar_produto(request, produto_id):
     produto = get_object_or_404(Produto,id=produto_id)
-    template_name = 'produtos/deletar_produtos.html'
+    template_name = 'products/deletar_produtos.html'
     context = {'produto':produto}
     if request.method == 'POST':
         produto.delete()

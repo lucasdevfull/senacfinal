@@ -1,15 +1,18 @@
-from django.contrib.auth import admin as admin_auth
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin 
 from django.contrib import admin
 from .models import User
 from .forms import UserChangeForm,UserCreationForm
 
 # Register your models here.
+
+
+
 @admin.register(User)
-class UserAdmin(admin_auth.UserAdmin):
+class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     model = User
-    fieldsets = admin_auth.UserAdmin.fieldsets + (
+    fieldsets = BaseUserAdmin.fieldsets + (
         ('Informações adicionais', 
          {'fields': (
              'data_nascimento',

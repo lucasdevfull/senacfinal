@@ -32,8 +32,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "admin_interface",
-    "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,8 +47,7 @@ INSTALLED_APPS = [
     'app',
     #........
 ]
-X_FRAME_OPTIONS = "SAMEORIGIN"
-SILENCED_SYSTEM_CHECKS = ["security.W019"]
+
   
 
 MIDDLEWARE = [
@@ -62,9 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-     # exten~sao
-    "django.middleware.locale.LocaleMiddleware",
-    # ...
+    
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -100,7 +95,7 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'authentication.User'
 
-AUTHENTICATION_BACKENDS = ['authentication.backend.MyBackend']
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -153,3 +148,4 @@ MESSAGE_TAGS = {
     constants.INFO: ' text-yellow-800 bg-gray-50 dark:bg-gray-800 dark:text-gray-300',
     constants.WARNING: 'text-yellow-800 bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300',
 }
+
