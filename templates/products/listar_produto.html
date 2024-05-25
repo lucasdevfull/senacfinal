@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+{% block 'body'%}
+{% include 'partials/sidebar.html'%}
+<div class="p-4 sm:ml-64">
+    <h1 class="p-5 font-sans text-3xl">Lista de produtos:</h1>
+
+    <div class="flex flex-row gap-4 justify-center mx-auto mt-8"> 
+        <input class=" w-64 rounded-lg" type="text">
+        <input class="w-64 rounded-lg" type="text">
+        <button class="bg-blue-700 rounded-lg w-20">Filtrar</button>
+    </div>
+    <div class="flex flex-col ">
+        <ul class=" flex flex-row mx-auto p-6 pt-7 gap-7">
+            <li>
+                produtos
+            </li>
+            <li>
+                categoria
+            </li>
+            <li>
+                preço
+            </li>
+            <li>
+                quantidade
+            </li>
+        </ul>
+    </div>
+
+    
+</div>
+    
+{% endblock %}
