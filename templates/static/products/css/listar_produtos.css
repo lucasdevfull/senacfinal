@@ -1,0 +1,5 @@
+@media (min-width: 320px) {
+    .ssm{
+        @apply w-1/4
+    }
+}

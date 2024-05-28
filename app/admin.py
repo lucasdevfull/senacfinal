@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Produto
+from .models import Produto,Fabricante,Categoria
 # Register your models here.
-
-
+admin.site.register(Categoria)
+admin.site.register(Fabricante)
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id','nome_produto','estoque','categoria']
+    list_filter = ['fabricante','categoria']

@@ -2,13 +2,13 @@ from django.db import models
 from authentication.models import User
 # Create your models here.
 class Categoria(models.Model):
-    nome = models.CharField(max_length=255)
+    nome_categoria = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return self.nome
     
 class Fabricante(models.Model):
-    nome = models.CharField(max_length=255)
+    nome_fabricante = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return self.nome

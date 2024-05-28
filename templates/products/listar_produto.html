@@ -1,32 +1,50 @@
 {% extends 'index.html' %}
 {% block 'body'%}
 {% include 'partials/sidebar.html'%}
-<div class="p-4 sm:ml-64">
-    <h1 class="p-5 font-sans text-3xl">Lista de produtos:</h1>
-
-    <div class="flex flex-row gap-4 justify-center mx-auto mt-8"> 
-        <input class=" w-64 rounded-lg" type="text">
-        <input class="w-64 rounded-lg" type="text">
-        <button class="bg-blue-700 rounded-lg w-20">Filtrar</button>
+<div class="container mx-auto">
+    <div class="p-4 sm:ml-64">
+        <h1 class="p-5 font-sans text-3xl">Listagem de produtos:</h1>
+        <form action="{% url 'listar' %}" method="GET">
+            <div class="flex flex-wrap gap-4 justify-end mx-auto mt-8 pr-6 w-full "> 
+                <select name="fabricante" id="" class="px-1 sm:w-28 md:40 rounded-lg bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-none disabled:border-0 disabled:bg-blue-gray-50">
+                    <option value="" selected disabled>Fabricante</option>
+                    {% for fabricante in fabricante  %}
+                        <option value="{{fabricante.id}}" placeholder="fabricante">{{fabricante.nome}}</option>
+                    {% endfor %}
+                </select>
+                
+                <select name="categoria" id="" class="px-1 sm:w-38 md:40 rounded-lg bg-transparent font-sans text-sm font-normal text-blue-gray-700 outline-none transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-none disabled:border-0 disabled:bg-blue-gray-50">
+                    <option value="" selected disabled>Categoria</option>
+                    {% for categoria in categorias %}
+                        <option value="{{categoria.id}}">{{categoria.nome}}</option>
+                    {% endfor %}
+                </select>
+                <button class="ssm border border-solid border-zinc-900 bg-blue-700 rounded-lg px-4 py-2">Filtrar</button>
+            </div>
+        </form>
+        <div class="mt-8 overflow-x-auto">
+            <table class="rounded-lg divide-y divide-gray-200 bg-slate-600 w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-2 py-3  text-xs text-center uppercase tracking-wider">Produtos</th>
+                        <th class='px-2 py-3  text-xs text-center uppercase tracking-wider'>Categoria</th>
+                        <th class='px-2 py-3  text-xs text-center uppercase tracking-wider'>Quantidade</th>
+                        <th class='px-2 py-3  text-xs text-center uppercase tracking-wider'>Preço</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-slate divide-y divide-gray-200">
+                    {% for produto in produtos %}
+                        <tr class="">
+                            <td class="px-2 py-3 whitespace-nowrap text-center  text-sm font-medium text-white hover:underline hover:underline-offset-4" href="">{{produto.nome_produto}}</td>
+                            <td class="px-2 py-3 whitespace-nowrap text-center text-sm text-white">{{produto.categoria}}</td>
+                            <td class="px-2 py-3 whitespace-nowrap text-center text-sm text-white">{{produto.estoque}}</td>
+                            <td class="px-2 py-3 whitespace-nowrap text-center text-sm text-white">R${{produto.preco}}</td>
+                        </tr>
+                    {% endfor %}  
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="flex flex-col ">
-        <ul class=" flex flex-row mx-auto p-6 pt-7 gap-7">
-            <li>
-                produtos
-            </li>
-            <li>
-                categoria
-            </li>
-            <li>
-                preço
-            </li>
-            <li>
-                quantidade
-            </li>
-        </ul>
-    </div>
-
-    
 </div>
     
 {% endblock %}

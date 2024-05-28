@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+{% block 'body'%}
+{% include 'partials/sidebar.html' %}
+    <div class="container mx-auto">
+        <div class="p-4 sm:ml-64">
+            <h1 class="p-5 font-sans text-3xl">Cadastro de produtos:</h1>
+            <form class="space-y-4 md:space-y-6" action="{% url 'adicionar' %}" method="POST"> {% csrf_token %}
+                <div>
+                    <label for="">Nome do produto</label>
+                    <input class="w-full rounded-lg" type="text" placeholder="Nome do produto">
+                </div>
+                
+                <div>
+                    <label for="">Descrição do produto</label>
+                    <textarea class="w-full rounded-lg" name="descricao" id="" cols="30" rows="10"></textarea>
+                </div>
+                
+                <div class="columns-2">
+                    <label for="">Preço</label>
+                    <input class="w-full rounded-lg" type="number" name="preco" id="">
+            
+                    <label for="">Quantidade do produto</label>
+                    <input class="w-full rounded-lg" type="number" name="quantidade" id="qtd">
+                </div>
+                
+                <div class="columns-2">
+                    <label for="">Fabricante</label>
+                    <input class="w-full rounded-lg" type="text" name="fabricante" id="">
+                
+                    <label for="">Categoria</label>
+                    <input class='w-full rounded-lg' type="text" name="categoria" id="">
+          
+                </div>
+                <div class="flex gap-4">
+                    <button class="gap-4 px-4 py-2 bg-green-600 border border-solid border-zinc-900 rounded-lg hover:bg-green-700 focus:border-2 focus:border-zinc-950" type="submit">Cadastrar</button>
+                    <button class="px-4 py-2 bg-red-600 border border-solid border-zinc-900 rounded-lg hover:bg-red-700 focus:border-2 focus:border-zinc-950">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>  
+{% endblock %}
+    

@@ -3,7 +3,7 @@ from django.contrib.messages import constants
 from django.contrib import messages 
 from django.urls import reverse
 from django.db import transaction
-from .models import Produto
+from .models import Produto,Categoria,Fabricante
 # Create your views here.
 def home(request):
     template_name ='products/home.html'
@@ -11,9 +11,30 @@ def home(request):
 
 def listar_produto(request):
     if request.method == 'GET':
-        produto = Produto.objects.all()
+        fabricante= request.GET.get('fabricante')
+        categoria = request.GET.get('categoria')
+        produtos = Produto.objects.all()
+
+        todos_produtos = []
+        if categoria:
+            categoria_id = Categoria.objects.filter(pk=int(categoria)).first().pk
+            for produto in produtos:
+                if produto.categoria.pk == categoria_id:
+                    todos_produtos.append(produto)
+        
+        if fabricante:
+            fabricante_id=Fabricante.objects.filter(pk=int(fabricante)).first().pk
+            for produto in produtos:
+                if produto.fabricante.pk == fabricante_id:
+                    todos_produtos.append(produto)
+
         template_name = 'products/listar_produto.html'
-        context = {'produto':produto}
+
+        context = {
+            'produtos': todos_produtos if categoria else produtos,
+            'categorias': Categoria.objects.all(),
+            'fabricante': Fabricante.objects.all()
+        }
         return render(request,template_name,context)
 
 def adicionar_produto(request):
@@ -37,7 +58,15 @@ def adicionar_produto(request):
                     fabricante = fabricante,
                     categoria = categoria
                     )
+                fabricantes=Fabricante(
+                    nome_fabricante = fabricante
+                )
+                categoria=Categoria(
+                    nome_categoria = categoria
+                )
                 produtos.save()
+                fabricantes.save()
+                categoria.save()
             except:
                 messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!')
                 return redirect(reverse('adicionar_produto'))
