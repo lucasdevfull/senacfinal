@@ -4,37 +4,51 @@
 {% include 'partials/sidebar.html' %}
     <div class="container mx-auto">
         <div class="p-4 sm:ml-64">
-            <h1 class="p-5 font-sans text-3xl">Cadastro de produtos:</h1>
-            <form class="space-y-4 md:space-y-6" action="{% url 'adicionar' %}" method="POST"> {% csrf_token %}
+            <h1 class="p-5 font-medium text-3xl dark:text-white">Cadastro de produtos:</h1>
+            {% if message %}
+                {% for messages in message %}
+                    <div class="p-4 mb-4 text-sm rounded-lg {{messages.tags}}">
+                        <span class="font-medium">{{messages}}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <form class="rounded-md  space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'adicionar' %}" method="POST">
+                {% csrf_token %}
                 <div>
-                    <label for="">Nome do produto</label>
-                    <input class="w-full rounded-lg" type="text" placeholder="Nome do produto">
+                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="nome_produto">Nome do produto:</label>
+                    <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
                 </div>
                 
                 <div>
-                    <label for="">Descrição do produto</label>
-                    <textarea class="w-full rounded-lg" name="descricao" id="" cols="30" rows="10"></textarea>
+                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="descricao_produto">Descrição do produto:</label>
+                    <textarea class="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto"></textarea>
                 </div>
                 
-                <div class="columns-2">
-                    <label for="">Preço</label>
-                    <input class="w-full rounded-lg" type="number" name="preco" id="">
-            
-                    <label for="">Quantidade do produto</label>
-                    <input class="w-full rounded-lg" type="number" name="quantidade" id="qtd">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="quantidade" id="quantidade_produto" placeholder="Quantidade do produto">
+                    </div>
                 </div>
                 
-                <div class="columns-2">
-                    <label for="">Fabricante</label>
-                    <input class="w-full rounded-lg" type="text" name="fabricante" id="">
-                
-                    <label for="">Categoria</label>
-                    <input class='w-full rounded-lg' type="text" name="categoria" id="">
-          
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="categoria" id="categoria_produto" placeholder="Categoria">
+                    </div>
                 </div>
-                <div class="flex gap-4">
-                    <button class="gap-4 px-4 py-2 bg-green-600 border border-solid border-zinc-900 rounded-lg hover:bg-green-700 focus:border-2 focus:border-zinc-950" type="submit">Cadastrar</button>
-                    <button class="px-4 py-2 bg-red-600 border border-solid border-zinc-900 rounded-lg hover:bg-red-700 focus:border-2 focus:border-zinc-950">Cancelar</button>
+                
+                <div class="flex gap-4 justify-end">
+                    <button class="px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
+                    <button class="px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
                 </div>
             </form>
         </div>
