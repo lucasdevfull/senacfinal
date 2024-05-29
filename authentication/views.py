@@ -48,4 +48,6 @@ def login(request:HttpRequest) -> HttpResponse:
         messages.add_message(request,constants.ERROR,'Username ou senha inválidos')
         return redirect(reverse('login'))
 
-
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse('login'))

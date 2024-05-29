@@ -1,5 +1,7 @@
+from typing import Any
 from django.db import models
 from django.apps import apps
+from django_countries.fields import CountryField  
 from django.contrib.auth.models import AbstractUser ,UserManager as BaseUserManager
 
 
@@ -34,18 +36,40 @@ class UserManager(BaseUserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 class User(AbstractUser):
-    username = models.CharField(max_length=150,unique=True,verbose_name='Nome de usuário')
-    email = models.EmailField( max_length=254,unique=True,verbose_name='Email do usuário')
-    data_nascimento = models.DateField(null=True,blank=True,verbose_name='Data de nascimento')
+    username = models.CharField(max_length=150,
+                                unique=True,
+                                verbose_name='Nome de usuário',
+                                db_column='nome_do_usuário',
+                                help_text='Digite o username',)
+    email = models.EmailField( max_length=254,
+                              unique=True,
+                              verbose_name='Email do usuário',
+                              db_column='email',
+                              help_text='Digite o email do usuário')
+    data_nascimento = models.DateField(null=True,
+                                       blank=True,
+                                       verbose_name='Data de nascimento',
+                                       db_column='data_de_nascimento',
+                                       help_text='Digite sua data de nascimento')
     genero_choices = [
         ('M','Masculino'),
         ('F','Feminino'),
         ('O','Outro'),
         ('P','Prefiro não dizer'),
     ]
-    genero = models.CharField(max_length=1,choices=genero_choices,null=True,blank=True,verbose_name='Gênero')
-    telefone = models.CharField(max_length=20,null=True,blank=True)
-    pais = models.CharField(max_length=100,null=True,blank=True,verbose_name='País')
+    genero = models.CharField(max_length=1,
+                              choices=genero_choices,
+                              null=True,
+                              blank=True,
+                              verbose_name='Gênero',
+                              db_column='genero',
+                              help_text='Gênero do usuário')
+    telefone = models.CharField(max_length=20,
+                                null=True,
+                                blank=True,
+                                db_column='telefone',
+                                help_text='Digite seu número de celular ou telefone')
+    pais = CountryField(verbose_name='País',db_column='pais',help_text='Informe o país')
     cidade = models.CharField(max_length=100,null=True,blank=True)
     endereco = models.CharField(max_length=255,null=True,blank=True,verbose_name='Endereço')
     cep = models.CharField(max_length=10,null=True,blank=True)
@@ -55,5 +79,10 @@ class User(AbstractUser):
     
     objects = UserManager()
 
+    class Meta:
+        db_table = 'Usuário'
+
     def __str__(self) -> str:
         return  self.email
+    
+    
