@@ -17,7 +17,11 @@ def register(request:HttpRequest) -> HttpResponse:
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('repeat_password')
-
+        cep = request.POST.get('cep')
+        cidade = request.POST.get('cidade')
+        estado = request.POST.get('estado')
+        endereco = request.POST.get('endereco')
+         
         users = User.objects.filter(username=username,email=email)
 
         if users.exists():

@@ -70,6 +70,7 @@ class User(AbstractUser):
                                 db_column='telefone',
                                 help_text='Digite seu número de celular ou telefone')
     pais = CountryField(verbose_name='País',db_column='pais',help_text='Informe o país')
+    estado = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100,null=True,blank=True)
     endereco = models.CharField(max_length=255,null=True,blank=True,verbose_name='Endereço')
     cep = models.CharField(max_length=10,null=True,blank=True)
