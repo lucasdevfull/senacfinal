@@ -1,4 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
+from django.contrib.auth.decorators import permission_required,login_required
+from django.db import IntegrityError
 from django.contrib.messages import constants
 from django.contrib import messages 
 from django.urls import reverse
@@ -50,28 +52,30 @@ def adicionar_produto(request):
 
         with transaction.atomic():
             try:
-                produtos=Produto(
-                    user = request.user,
-                    nome_produto = nome_produto,
-                    descricao = descricao,
-                    preco = preco,
-                    fabricante = fabricante,
-                    categoria = categoria
-                    )
-                fabricantes=Fabricante(
-                    nome_fabricante = fabricante
+                fabricantes = Fabricante.objects.get_or_create(fabricante=fabricante)
+                categorias = Categoria.objects.get_or_create(categoria=categoria)
+                
+                produto = Produto(
+                    user=request.user,
+                    nome_produto=nome_produto,
+                    descricao=descricao,
+                    preco=preco,
+                    fabricante=fabricantes,
+                    categoria=categorias
                 )
-                categoria=Categoria(
-                    nome_categoria = categoria
-                )
-                produtos.save()
-                fabricantes.save()
-                categoria.save()
-            except:
-                messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!')
-                return redirect(reverse('adicionar_produto'))
-        messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
-        return redirect(reverse('home'))
+                produto.save()
+            except IntegrityError:
+                messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!',IntegrityError)
+                return redirect(reverse('adicionar'))
+            messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
+            return redirect(reverse('home'))
+
+def details_produto(request,produto_id):
+    if request.user_hasperm:
+        produto = get_object_or_404(Produto,id=produto_id)
+        template_name = 'details_produto.html'
+        context = {'produto':produto}
+        return render(request,template_name,context)
 
 def editar_produto(request,produto_id):
     produto = get_object_or_404(Produto,id=produto_id)

@@ -2,13 +2,13 @@ from django.db import models
 from authentication.models import User
 # Create your models here.
 class Categoria(models.Model):
-    nome_categoria = models.CharField(max_length=255)
+    categoria = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return self.nome
     
 class Fabricante(models.Model):
-    nome_fabricante = models.CharField(max_length=255)
+    fabricante = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return self.nome
@@ -24,7 +24,8 @@ class Produto(models.Model):
     data_criacao = models.DateTimeField(auto_now_add=True)
     ultima_atualizacao = models.DateTimeField(auto_now=True)
 
-
+    
+    
     def __str__(self) -> str:
         return self.nome_produto  
     

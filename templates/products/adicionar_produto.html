@@ -5,10 +5,10 @@
     <div class="container mx-auto">
         <div class="p-4 sm:ml-64">
             <h1 class="p-5 font-medium text-3xl dark:text-white">Cadastro de produtos:</h1>
-            {% if message %}
-                {% for messages in message %}
-                    <div class="p-4 mb-4 text-sm rounded-lg {{messages.tags}}">
-                        <span class="font-medium">{{messages}}</span>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="p-4 mb-4 text-sm rounded-lg {{message.tags}}">
+                        <span class="font-medium">{{message}}</span>
                     </div>
                 {% endfor %}
             {% endif %}
