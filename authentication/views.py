@@ -26,7 +26,7 @@ def register(request:HttpRequest) -> HttpResponse:
 
         if users.exists():
             messages.add_message(request,constants.ERROR,'Usuário já existente')
-            return redirect(reverse('login'))
+            return redirect(reverse('register'))
         try:
             users=User.objects.create_user(username=username,email=email,password=confirm_password)
             messages.add_message(request,constants.SUCCESS,'Usuário criado com sucesso')

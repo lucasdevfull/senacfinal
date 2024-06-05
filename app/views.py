@@ -1,10 +1,9 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import permission_required,login_required
-from django.db import IntegrityError
 from django.contrib.messages import constants
 from django.contrib import messages 
 from django.urls import reverse
-from django.db import transaction
+from django.db import transaction,IntegrityError
 from .models import Produto,Categoria,Fabricante
 # Create your views here.
 def home(request):
@@ -47,14 +46,16 @@ def adicionar_produto(request):
         nome_produto = request.POST.get('produto')
         descricao = request.POST.get('descricao')
         preco = request.POST.get('preco')
-        fabricante = request.POST.get('fabricante')
-        categoria = request.POST.get('categoria')
+        fabricante_nome = request.POST.get('fabricante')
+        categoria_nome = request.POST.get('categoria')
 
         with transaction.atomic():
             try:
-                fabricantes = Fabricante.objects.get_or_create(fabricante=fabricante)
-                categorias = Categoria.objects.get_or_create(categoria=categoria)
+                #se fabricantes e categorias digitados existirem na tabela ele só dá um get na tabela.Se não ela vai adicionar dentro da tabela categoria e fabricante
                 
+                fabricantes, created = Fabricante.objects.get_or_create(fabricante=fabricante_nome,defaults={'fabricante':fabricante_nome})
+                categorias, created = Categoria.objects.get_or_create(categoria=categoria_nome,defaults={'categoria':categoria_nome})
+                print(created)
                 produto = Produto(
                     user=request.user,
                     nome_produto=nome_produto,
@@ -63,12 +64,16 @@ def adicionar_produto(request):
                     fabricante=fabricantes,
                     categoria=categorias
                 )
+            
                 produto.save()
+            
             except IntegrityError:
-                messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!',IntegrityError)
+                print(IntegrityError)
+                messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!')
                 return redirect(reverse('adicionar'))
             messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
             return redirect(reverse('home'))
+            
 
 def details_produto(request,produto_id):
     if request.user_hasperm:

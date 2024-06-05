@@ -5,13 +5,13 @@ class Categoria(models.Model):
     categoria = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.nome
+        return self.categoria
     
 class Fabricante(models.Model):
     fabricante = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.nome
+        return self.fabricante
 
 class Produto(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
