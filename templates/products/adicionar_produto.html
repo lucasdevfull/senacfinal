@@ -12,7 +12,7 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            <form class="rounded-md  space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'adicionar' %}" method="POST">
+            <form class="rounded-md space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'adicionar' %}" method="POST">
                 {% csrf_token %}
                 <div>
                     <label class="block text-gray-700 dark:text-gray-300 pb-2" for="nome_produto">Nome do produto:</label>
