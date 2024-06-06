@@ -1,5 +1,5 @@
 {% extends 'index.html' %}
-
+{% load static %}
 {% block 'body'%}
 {% include 'partials/sidebar.html' %}
     <div class="container mx-auto">
@@ -39,6 +39,7 @@
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
                         <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
+                        
                     </div>
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
@@ -46,12 +47,23 @@
                     </div>
                 </div>
                 
-                <div class="flex gap-4 justify-end">
-                    <button class="px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
-                    <button class="px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
+                <div class="grid grid-cols-1 md:grid-cols-4 place-items-stretch gap-4 justify-items-stretch">
+                    <button type="button" id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar fabricante</button>
+                    <a id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar categoria</a>
+                    <button class="w-full  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
+                    <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
                 </div>
             </form>
+        <div id='fabricante' class="hidden fixed flex justify-center items-center">
+            <div class="bg-white p-8 rounded-md">
+                <form action="" method="post">
+                    <label for="">Categoria</label>
+                    <input type="text" placeholder="Categoria...">
+                </form>
+            </div>
+        </div>
         </div>
     </div>  
 {% endblock %}
+<script src="{% static 'js/modal.js' %}"></script>
     
