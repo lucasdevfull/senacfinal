@@ -38,6 +38,28 @@ def listar_produto(request):
         }
         return render(request,template_name,context)
 
+def adicionar_categoria(request):
+    if request.method =='POST':
+        categoria=request.POST.get('categoria')
+        
+        categoria=Categoria(categoria=categoria)
+
+        categoria.save()
+        return redirect(reverse('adicionar'))
+    template_name = 'products/adicionar_categoria.html' 
+    return render(request,template_name)
+
+def adicionar_fabricante(request):
+    if request.method =='POST':
+        fabricante=request.POST.get('fabricante')
+        
+        fabricante=Categoria(fabricante=fabricante)
+
+        fabricante.save()
+        return redirect(reverse('adicionar'))
+    template_name = 'products/adicionar_fabricante.html' 
+    return render(request,template_name)
+    
 def adicionar_produto(request):
     if request.method == 'GET':
         template_name = 'products/adicionar_produto.html' 
@@ -49,22 +71,18 @@ def adicionar_produto(request):
         fabricante_nome = request.POST.get('fabricante')
         categoria_nome = request.POST.get('categoria')
 
+        
         with transaction.atomic():
             try:
                 #se fabricantes e categorias digitados existirem na tabela ele só dá um get na tabela.Se não ela vai adicionar dentro da tabela categoria e fabricante
-                
-                fabricantes, created = Fabricante.objects.get_or_create(fabricante=fabricante_nome,defaults={'fabricante':fabricante_nome})
-                categorias, created = Categoria.objects.get_or_create(categoria=categoria_nome,defaults={'categoria':categoria_nome})
-                print(created)
                 produto = Produto(
                     user=request.user,
                     nome_produto=nome_produto,
                     descricao=descricao,
                     preco=preco,
-                    fabricante=fabricantes,
-                    categoria=categorias
+                    fabricante=fabricante_nome,
+                    categoria=categoria_nome
                 )
-            
                 produto.save()
             
             except IntegrityError:
@@ -78,7 +96,7 @@ def adicionar_produto(request):
 def details_produto(request,produto_id):
     if request.user_hasperm:
         produto = get_object_or_404(Produto,id=produto_id)
-        template_name = 'details_produto.html'
+        template_name = 'products/details_produto.html'
         context = {'produto':produto}
         return render(request,template_name,context)
 
