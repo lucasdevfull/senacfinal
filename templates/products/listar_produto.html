@@ -9,14 +9,14 @@
                 <select name="fabricante" id="fabricante" class="px-2 py-1 sm:w-28 md:w-36 rounded-lg bg-white dark:bg-gray-800 text-sm font-normal text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 outline-none transition-all placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
                     <option value="" selected disabled>Fabricante</option>
                     {% for fabricante in fabricante %}
-                        <option value="{{fabricante.id}}">{{fabricante.nome}}</option>
+                        <option value="{{fabricante.id}}">{{fabricante.fabricante}}</option>
                     {% endfor %}
                 </select>
 
                 <select name="categoria" id="categoria" class="px-2 py-1 sm:w-28 md:w-36 rounded-lg bg-white dark:bg-gray-800 text-sm font-normal text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700 outline-none transition-all placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
                     <option value="" selected disabled>Categoria</option>
                     {% for categoria in categorias %}
-                        <option value="{{categoria.id}}">{{categoria.nome}}</option>
+                        <option value="{{categoria.id}}">{{categoria.categoria}}</option>
                     {% endfor %}
                 </select>
                 <div class="flex gap-4"> 
@@ -34,8 +34,8 @@
                 </div>
             </div>
         </form>
-        <div class="mt-8 overflow-x-auto">
-            <table class="rounded-lg divide-y divide-gray-200 bg-gray-50 dark:bg-gray-700 w-full">
+        <div class="mt-8 overflow-x-auto rounded-lg">
+            <table class="divide-y divide-gray-200 bg-gray-50 dark:bg-gray-700 w-full">
                 <thead class="bg-gray-100 dark:bg-gray-800">
                     <tr>
                         <th class="px-4 py-3 text-xs text-center uppercase tracking-wider text-gray-800 dark:text-gray-100">Produtos</th>
