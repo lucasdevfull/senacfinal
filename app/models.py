@@ -2,16 +2,16 @@ from django.db import models
 from authentication.models import User
 # Create your models here.
 class Categoria(models.Model):
-    categoria = models.CharField(max_length=255)
+    nome = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.categoria
+        return self.nome
     
 class Fabricante(models.Model):
-    fabricante = models.CharField(max_length=255)
+    nome = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.fabricante
+        return self.nome
 
 class Produto(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)

@@ -42,7 +42,7 @@ def adicionar_categoria(request):
     if request.method =='POST':
         categoria=request.POST.get('categoria')
         
-        categoria=Categoria(categoria=categoria)
+        categoria=Categoria(nome=categoria)
 
         categoria.save()
         return redirect(reverse('adicionar'))
@@ -53,7 +53,7 @@ def adicionar_fabricante(request):
     if request.method =='POST':
         fabricante=request.POST.get('fabricante')
         
-        fabricante=Categoria(fabricante=fabricante)
+        fabricante=Fabricante(nome=fabricante)
 
         fabricante.save()
         return redirect(reverse('adicionar'))
@@ -62,35 +62,43 @@ def adicionar_fabricante(request):
     
 def adicionar_produto(request):
     if request.method == 'GET':
+        fabricante = Fabricante.objects.all()
+        categoria = Categoria.objects.all()
+        context = {'fabricante':fabricante,
+                   'categorias':categoria}
         template_name = 'products/adicionar_produto.html' 
-        return render(request,template_name)
+        return render(request,template_name,context)
     elif request.method == 'POST':
-        nome_produto = request.POST.get('produto')
+        nome_produto = request.POST.get('nome_produto')
         descricao = request.POST.get('descricao')
         preco = request.POST.get('preco')
-        fabricante_nome = request.POST.get('fabricante')
-        categoria_nome = request.POST.get('categoria')
+        quantidade = request.POST.get('quantidade') 
+        fabricante_id = request.POST.get('fabricante')
+        categoria_id = request.POST.get('categoria')
 
         
         with transaction.atomic():
             try:
-                #se fabricantes e categorias digitados existirem na tabela ele só dá um get na tabela.Se não ela vai adicionar dentro da tabela categoria e fabricante
+                fabricante = Fabricante.objects.get(id=fabricante_id)
+                categoria = Categoria.objects.get(id=categoria_id)
+                
                 produto = Produto(
                     user=request.user,
                     nome_produto=nome_produto,
                     descricao=descricao,
                     preco=preco,
-                    fabricante=fabricante_nome,
-                    categoria=categoria_nome
+                    estoque=quantidade,
+                    fabricante=fabricante,
+                    categoria=categoria
                 )
                 produto.save()
-            
-            except IntegrityError:
-                print(IntegrityError)
-                messages.add_message(request,constants.ERROR,'Erro ao enviar o cadastro!')
+                messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
+                return redirect(reverse('home'))
+            except Exception as e:
+                print(str(e))
+                messages.add_message(request,constants.ERROR,f'Erro ao enviar o cadastro. motivo{e}')
                 return redirect(reverse('adicionar'))
-            messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
-            return redirect(reverse('home'))
+            
             
 
 def details_produto(request,produto_id):
