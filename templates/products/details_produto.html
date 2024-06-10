@@ -1,38 +1,43 @@
 {% extends 'index.html' %}
 
 {% block 'body' %}
-    <form action="{% url 'detalhe' %}" method="get">
-            <div>
-                <label class="block text-gray-700 dark:text-gray-300 pb-2" for="nome_produto">Nome do produto:</label>
-                <input value="{{produto.nome_produto}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
-            </div>
-            
-            <div>
-                <label class="block text-gray-700 dark:text-gray-300 pb-2" for="descricao_produto">Descrição do produto:</label>
-                <textarea class="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto"></textarea>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+{% include 'partials/sidebar.html' %}
+<div class="container mx-auto">
+    <div class="p-4 sm:ml-64">
+        <form class="rounded-md space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'detalhe' produto.id %}" method="get">
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
-                    <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
+                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="nome_produto">Nome do produto:</label>
+                    <input value="{{produto.nome_produto}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
                 </div>
+                
                 <div>
-                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
-                    <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="quantidade" id="quantidade_produto" placeholder="Quantidade do produto">
+                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="descricao_produto">Descrição do produto:</label>
+                    <textarea class="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto">{{produto.descricao}}</textarea>
                 </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
-                    <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
+                        <input value="{{produto.preco}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
+                        <input value="{{produto.estoque}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="quantidade" id="quantidade_produto" placeholder="Quantidade do produto">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
-                    <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="categoria" id="categoria_produto" placeholder="Categoria">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="categoria" id="categoria_produto" placeholder="Categoria">
+                    </div>
                 </div>
-            </div>
-    </form>
+        </form>
+    </div>
+</div>
 {% endblock %}
     

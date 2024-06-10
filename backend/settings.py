@@ -49,8 +49,14 @@ INSTALLED_APPS = [
     'authentication',
     'app',
     #........
+
+    "rolepermissions",
 ]
 
+
+ROLEPERMISSIONS_MODULE = 'backend.roles'
+X_FRAME_OPTIONS = "SAMEORIGIN"
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
   
 
 MIDDLEWARE = [
