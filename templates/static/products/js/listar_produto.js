@@ -1,15 +1,11 @@
 const closemodal = () =>
-document.getElementById('modal_form').classList.add('hidden');
-
-
-document.getElementById('modal_form').addEventListener("click", () =>{
   document.getElementById('modal_form').classList.add('hidden');
-})
 
 const openmodal = () =>
   document.getElementById('modal_form').classList.remove('hidden');
 
 function showOnList(params) {
+  //json.parse transforma o json  em um objeto javascript
     const produto_objeto = JSON.parse(params.produto);
     document.getElementById('nome_produto').value = produto_objeto.nome_produto
     document.getElementById('descricao_produto').value = produto_objeto.descricao
@@ -47,10 +43,8 @@ async function getProductDetails(id) {
     //console.log(await response.json());
     const params = await response.json()
     showOnList(params);
-    console.log(params.produtonome_produto)
-    p = JSON.parse(params.produto)
-    console.log(p.nome_produto)
-
+    
+    
   } catch (error) {
     console.error(`Erro na busca dos dados: ${error}`);
   }
