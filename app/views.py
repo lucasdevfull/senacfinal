@@ -1,9 +1,16 @@
+import json
+
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import permission_required,login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.messages import constants
 from django.contrib import messages 
 from django.urls import reverse
 from django.db import transaction,IntegrityError
+from django.http import JsonResponse
+from authentication.models import User
+from rolepermissions.roles import assign_role
+from rolepermissions.permissions import revoke_permission
 from .models import Produto,Categoria,Fabricante
 # Create your views here.
 def home(request):
@@ -28,13 +35,14 @@ def listar_produto(request):
             for produto in produtos:
                 if produto.fabricante.pk == fabricante_id:
                     todos_produtos.append(produto)
-
+        user = User.objects.get(id=1)
+        assign_role(user, "change")
+        revoke_permission(user, "change_product")
         template_name = 'products/listar_produto.html'
-
         context = {
             'produtos': todos_produtos if categoria else produtos,
             'categorias': Categoria.objects.all(),
-            'fabricante': Fabricante.objects.all()
+            'fabricantes': Fabricante.objects.all()
         }
         return render(request,template_name,context)
 
@@ -100,17 +108,26 @@ def adicionar_produto(request):
                 return redirect(reverse('adicionar'))
             
             
+@csrf_exempt
+def details_produto(request,id):
+    if request.method == 'GET':
+        produto = get_object_or_404(Produto,id=id)
+        
+        produto_dict = {
+            'nome_produto': str(produto.nome_produto),
+            'descricao': str(produto.descricao),
+            'preco': str(produto.preco),
+            'estoque': str(produto.estoque),
+            'fabricante': str(produto.fabricante),
+            'categoria': str(produto.categoria),
+        }
+        produto_serializer = json.dumps(produto_dict)
+        if produto:
+            return JsonResponse({"message": "success", "produto": produto_serializer})
+        return JsonResponse({"message": "error"})
 
-def details_produto(request,produto_id):
-    if request.user_hasperm:
-        produto = get_object_or_404(Produto,id=produto_id)
-        template_name = 'products/details_produto.html'
-        context = {'produto':produto}
-        return render(request,template_name,context)
-
-def editar_produto(request,produto_id):
-    produto = get_object_or_404(Produto,id=produto_id)
-    template_name = 'products/editar_produto.html'
+def editar_produto(request,id):
+    produto = get_object_or_404(Produto,id=id)
     context = {'produto':produto}
     if request.method == 'POST':
         produto.nome_produto = request.POST.get('produto')
@@ -120,10 +137,10 @@ def editar_produto(request,produto_id):
         produto.categoria = request.POST.get('categoria')
         produto.save()
         return redirect(reverse('home'))
-    return render(request,template_name,context)
+    return render(request,context)
 
-def deletar_produto(request, produto_id):
-    produto = get_object_or_404(Produto,id=produto_id)
+def deletar_produto(request,id):
+    produto = get_object_or_404(Produto,id=id)
     template_name = 'products/deletar_produtos.html'
     context = {'produto':produto}
     if request.method == 'POST':
