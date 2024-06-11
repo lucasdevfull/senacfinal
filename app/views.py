@@ -121,7 +121,10 @@ def details_produto(request,id):
             'fabricante': str(produto.fabricante),
             'categoria': str(produto.categoria),
         }
+
+        # Converte o dicionário em uma string JSON
         produto_serializer = json.dumps(produto_dict)
+        
         if produto:
             return JsonResponse({"message": "success", "produto": produto_serializer})
         return JsonResponse({"message": "error"})
