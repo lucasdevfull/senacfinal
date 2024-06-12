@@ -1,5 +1,3 @@
-const form = document.getElementById('form_register')
-
 function validateFormRegister(event){
     event.preventDefault();
 
@@ -8,12 +6,15 @@ function validateFormRegister(event){
     const password1 = document.getElementById('password').value;
     const password2 = document.getElementById('repeat_password').value;    
 
-    
+    const error = document.getElementById('error');
+    const error_span = document.getElementById('spanerror')
+
     if (username.trim() === '') {
         //window.alert('Username é obrigatório')
 
-        document.getElementById('erro').innerText = 'Username é obrigatório'
-        document.getElementById('erro').classList.remove('hidden')    
+        error_span.innerText = 'Username é obrigatório'
+        error.classList.remove('hidden')
+        timeError()    
         return false
     
     }
@@ -21,28 +22,39 @@ function validateFormRegister(event){
     if (email.trim() === ''){
         //window.alert('Email é orbigatório')
         
-        document.getElementById('erro').innerText = 'Email é obrigatório'
-        document.getElementById('erro').classList.remove('hidden')
+        error_span.innerText = 'Email é obrigatório'
+        error_span.classList.remove('hidden')
+        timeError()
         return false 
     
     }
 
     if (password1.trim() !== password2.trim()) {
-        window.alert('Campos de senha não são iguais')
+        //window.alert('Campos de senha não são iguais')
 
         
-        document.getElementById('erro').innerText = 'Os campos de senha não coincidem'
-        document.getElementById('erro').classList.remove('hidden')
+        error_span.innerText = 'Os campos de senha não coincidem'
+        error.classList.remove('hidden')
+        timeError()
         return false
     
     }  else if (password1.trim() === '' || password2.trim()=== '') {
 
-        document.getElementById('erro').innerText = 'Os campos de senha são obrigatórios'
-        document.getElementById('erro').classList.remove('hidden')
+        error_span.innerText = 'Os campos de senha são obrigatórios'
+        error.classList.remove('hidden')
+        timeError()
         return false
     
     }
     return true
+    
+}
+function timeError() {
+
+    const error = document.getElementById('erro') 
+    setTimeout(() => {
+       error.classList.add('hidden') 
+    }, 3000);
 }
 
 const handlePhone = (event) => {
