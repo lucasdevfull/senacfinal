@@ -42,8 +42,11 @@ def login(request:HttpRequest) -> HttpResponse:
         username = request.POST.get('name')
         password = request.POST.get('password')
 
-        users =auth.authenticate(request,username=username,password=password)
-        
+        user = User.objects.filter(username=username,password=password)
+        if user.exists():
+            users =auth.authenticate(request,username=username,password=password)
+        else:
+            messages.add_message(request,constants.ERROR,'Usuário não existe')
         if users:
             auth.login(request,users)
             return redirect(reverse('home'))

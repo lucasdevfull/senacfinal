@@ -150,3 +150,7 @@ def deletar_produto(request,id):
         produto.delete()
         return redirect(reverse('home'))
     return render(request,template_name,context)
+
+def relatorio(request):
+    categoria = Categoria.objects.all()
+    return print(categoria)
