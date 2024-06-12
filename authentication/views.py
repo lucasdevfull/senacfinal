@@ -17,10 +17,7 @@ def register(request:HttpRequest) -> HttpResponse:
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('repeat_password')
-        cep = request.POST.get('cep')
-        cidade = request.POST.get('cidade')
-        estado = request.POST.get('estado')
-        endereco = request.POST.get('endereco')
+        telefone = request.POST.get('telefone')
          
         users = User.objects.filter(username=username,email=email)
 
@@ -28,12 +25,13 @@ def register(request:HttpRequest) -> HttpResponse:
             messages.add_message(request,constants.ERROR,'Usuário já existente')
             return redirect(reverse('register'))
         try:
-            users=User.objects.create_user(username=username,email=email,password=confirm_password)
+            users=User.objects.create_user(username=username,email=email,password=confirm_password, telefone=telefone)
             messages.add_message(request,constants.SUCCESS,'Usuário criado com sucesso')
             return redirect(reverse('login'))
         except:
             messages.add_message(request, constants.ERROR,'Erro interno no servidor')
             return redirect(reverse('register')) 
+        
 def login(request:HttpRequest) -> HttpResponse:
     if request.method == 'GET':
     

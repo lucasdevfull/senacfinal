@@ -1,64 +1,59 @@
-function limpa_formulário_cep() {
-    //Limpa valores do formulário de cep.
-    document.getElementById('endereco').value=("");
-    document.getElementById('bairro').value=("");
-    document.getElementById('cidade').value=("");
-    document.getElementById('uf').value=("");
+const form = document.getElementById('form_register')
+
+function validateFormRegister(event){
+    event.preventDefault();
+
+    const username = document.getElementById('name').value;
+    const email  = document.getElementById('email').value;
+    const password1 = document.getElementById('password').value;
+    const password2 = document.getElementById('repeat_password').value;    
+
     
-}
+    if (username.trim() === '') {
+        //window.alert('Username é obrigatório')
 
-function meu_callback(conteudo) {
-if (!("erro" in conteudo)) {
-    //Atualiza os campos com os valores.
-    document.getElementById('endereco').value=(conteudo.logradouro);
-    document.getElementById('uf').value=(conteudo.uf);
-    document.getElementById('cidade').value=(conteudo.localidade);
+        document.getElementById('erro').innerText = 'Username é obrigatório'
+        document.getElementById('erro').classList.remove('hidden')    
+        return false
     
-} //end if.
-else {
-    //CEP não Encontrado.
-    limpa_formulário_cep();
-    alert("CEP não encontrado.");
-}
-}
-
-function pesquisacep(valor) {
-
-//Nova variável "cep" somente com dígitos.
-var cep = valor.replace(/\D/g, '');
-
-//Verifica se campo cep possui valor informado.
-if (cep != "") {
-
-    //Expressão regular para validar o CEP.
-    var validacep = /^[0-9]{8}$/;
-
-    //Valida o formato do CEP.
-    if(validacep.test(cep)) {
-
-        //Preenche os campos com "..." enquanto consulta webservice.
-        document.getElementById('endereco').value="...";
-        document.getElementById('cidade').value="...";
-        document.getElementById('uf').value="...";
-
-        //Cria um elemento javascript.
-        var script = document.createElement('script');
-
-        //Sincroniza com o callback.
-        script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
-
-        //Insere script no documento e carrega o conteúdo.
-        document.body.appendChild(script);
-
-    } //end if.
-    else {
-        //cep é inválido.
-        limpa_formulário_cep();
-        alert("Formato de CEP inválido.");
     }
-} //end if.
-else {
-    //cep sem valor, limpa formulário.
-    limpa_formulário_cep();
+
+    if (email.trim() === ''){
+        //window.alert('Email é orbigatório')
+        
+        document.getElementById('erro').innerText = 'Email é obrigatório'
+        document.getElementById('erro').classList.remove('hidden')
+        return false 
+    
+    }
+
+    if (password1.trim() !== password2.trim()) {
+        window.alert('Campos de senha não são iguais')
+
+        
+        document.getElementById('erro').innerText = 'Os campos de senha não coincidem'
+        document.getElementById('erro').classList.remove('hidden')
+        return false
+    
+    }  else if (password1.trim() === '' || password2.trim()=== '') {
+
+        document.getElementById('erro').innerText = 'Os campos de senha são obrigatórios'
+        document.getElementById('erro').classList.remove('hidden')
+        return false
+    
+    }
+    return true
 }
-};
+
+const handlePhone = (event) => {
+    let celular = event.target
+    celular.value = maskphone(celular.value)
+}
+
+const maskphone = (value) => {
+    if (!value) return ''
+    value = value.replace(/\D/g, '')
+    value = value.replace(/(\d{2})(\d)/, '($1) $2')
+    value = value.replace(/(\d)(\d{4})$/, '$1-$2')
+    return value
+}
