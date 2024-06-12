@@ -18,10 +18,6 @@ class UserAdmin(BaseUserAdmin):
              'data_nascimento',
                      'genero',
                      'telefone',
-                     'pais',
-                     'cidade',
-                     'endereco',
-                     'cep'
                      )
             }
         ),

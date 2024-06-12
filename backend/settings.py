@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #api e libs django
-    'django_countries',
     'rest_framework',
     'djoser',
     #...

@@ -1,7 +1,6 @@
 from typing import Any
 from django.db import models
 from django.apps import apps
-from django_countries.fields import CountryField  
 from django.contrib.auth.models import AbstractUser ,UserManager as BaseUserManager
 
 
@@ -69,7 +68,6 @@ class User(AbstractUser):
                                 blank=True,
                                 db_column='telefone',
                                 help_text='Digite seu número de celular ou telefone')
-    pais = CountryField(verbose_name='País',db_column='pais',help_text='Informe o país')
     
 
     EMAIL_FIELD = 'email'
