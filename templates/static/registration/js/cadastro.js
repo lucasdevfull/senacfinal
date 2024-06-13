@@ -35,7 +35,7 @@ function validateFormRegister(event){
         error_span.classList.remove('hidden')
         timeError(error)
 
-        return false
+        
     }
 
     if (password1.trim()<8) {
@@ -81,7 +81,7 @@ const isEmailValid = (email) => {
         //usuario12@host.com
         /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$/
     )
-    if(email.test(email)) {
+    if(emailRegex.test(email)) {
         return true
     }
     return false

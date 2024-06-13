@@ -1,4 +1,4 @@
-const validateFormLogin = (event) => {
+const validateLogin = (event) => {
     event.preventDefault();
 
     const username = document.getElementById('name').value;
@@ -24,6 +24,7 @@ const validateFormLogin = (event) => {
         
         return false
     }
+    
 }
 
 const timeError = (error) => {
