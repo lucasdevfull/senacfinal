@@ -58,16 +58,42 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-4 place-items-stretch gap-4 justify-items-center">
-                    <a id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400" href="{% url 'fabricante' %}">Adicionar fabricante</a>
-                    <a id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400" href="{% url 'categoria' %}">Adicionar categoria</a>
+                    <button onclick='openModalFabricante()' type='button' id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400" href="{% url 'fabricante' %}">Adicionar fabricante</button>
+                    <button onclick='openModalCategoria()' type='button' id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400" href="{% url 'categoria' %}">Adicionar categoria</button>
                     <button class="w-full  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
                     <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
                 </div>
             </form>
+            
+            <div id="modal_fabricante" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div class="bg-white p-8 rounded-md">
+                    <form onsubmit="formFabricante()" method="POST">{% csrf_token %}
+                        <div class="flex gap-4 justify-between">
+                            <h3 class="text-lg">Adicione o fabricante</h3>
+                            <button onclick="closeModalFabricante()" type="button" class="text-right">&times;</button>
+                        </div>
+                        <input class="rounded-md" name="fabricante" id="fabricante" type="text" placeholder="Fabricante...">
+                        <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                    </form>
+                </div>
+            </div>
+            <div id="modal_categoria" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                <div class="bg-white p-8 rounded-md">
+                    <form onsubmit="formCategoria()" method="POST">{% csrf_token %}
+                        <div class="flex gap-4 justify-between">
+                            <h3 class="text-lg">Adicione a categoria</h3>
+                            <button onclick="closeModalCategoria()" type="button" class="text-right">&times;</button>
+                        </div>
+                        <input class="rounded-md" name="categoria" id="categoria" type="text" placeholder="Categoria...">
+                        <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                        
+                    </form>
+                </div>
+            </div>
         </div>
     </div>  
 {% endblock %}
 {% block 'scripts' %}
-    <script src="{% static 'js/adicionar_produto.js' %}"></script>
-{% endblock %}
+    <script src="{% static 'products/js/adicionar_produto.js' %}"></script>
+{% endblock 'scripts' %}
     

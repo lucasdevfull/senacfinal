@@ -1,6 +1,5 @@
-function validateFormRegister(event){
-    event.preventDefault();
-
+const validateFormRegister = () => {
+    
     const username = document.getElementById('name').value;
     const email  = document.getElementById('email').value;
     const password1 = document.getElementById('password').value;
