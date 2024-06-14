@@ -1,5 +1,7 @@
+from django.db.utils import IntegrityError
 from django.shortcuts import render,redirect
 from .models import User
+from django.views import View
 from django.urls import reverse
 from django.http import HttpResponse,HttpRequest
 from django.contrib import auth
@@ -7,18 +9,19 @@ from django.contrib import messages
 from django.contrib.messages import constants
 
 # Create your views here.
+class RegisterView(View):
+    template_name: str = "registration/cadastro.html" 
 
-def register(request:HttpRequest) -> HttpResponse:
-    if request.method == 'GET':
-        template_name = "registration/cadastro.html"
-        return render(request,template_name)
-    elif request.method == 'POST':
-        username = request.POST.get('name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('repeat_password')
-        telefone = request.POST.get('telefone')
-         
+    def get(self,request:HttpRequest) -> HttpResponse:    
+        return render(request,self.template_name)
+        
+    def post(self,request:HttpRequest) -> HttpResponse:
+        username: str = request.POST.get('name')
+        email: str = request.POST.get('email')
+        password: str = request.POST.get('password')
+        confirm_password: str = request.POST.get('repeat_password')
+        telefone: str  = request.POST.get('telefone')
+            
         users = User.objects.filter(username=username,email=email)
 
         if users.exists():
@@ -28,31 +31,27 @@ def register(request:HttpRequest) -> HttpResponse:
             users=User.objects.create_user(username=username,email=email,password=confirm_password, telefone=telefone)
             messages.add_message(request,constants.SUCCESS,'Usuário criado com sucesso')
             return redirect(reverse('login'))
-        except:
-            messages.add_message(request, constants.ERROR,'Erro interno no servidor')
+        except IntegrityError:
+            messages.add_message(request, constants.ERROR,f'Erro interno no servidor {IntegrityError}')
             return redirect(reverse('register')) 
-        
-def login(request:HttpRequest) -> HttpResponse:
-    if request.method == 'GET':
-    
-        template_name = "registration/login.html"
-        return render(request,template_name)
-    elif request.method == 'POST':
-    
-        username = request.POST.get('name')
-        password = request.POST.get('password')
 
-        user = User.objects.filter(username=username,password=password)
-        if user.exists():
-            users =auth.authenticate(request,username=username,password=password)
-        else:
-            messages.add_message(request,constants.ERROR,'Usuário não existe')
+class LoginView(View):      
+    template_name: str = "registration/login.html" 
+    def get(self,request:HttpRequest) -> HttpResponse:    
+        return render(request,self.template_name)
+    def post(self,request:HttpRequest) ->HttpResponse:
+        username:str = request.POST.get('name')
+        password:str = request.POST.get('password')
+
+        users =auth.authenticate(request,username=username,password=password)
+
         if users:
             auth.login(request,users)
             return redirect(reverse('home'))
         messages.add_message(request,constants.ERROR,'Username ou senha inválidos')
         return redirect(reverse('login'))
+class LogoutView(View):
 
-def logout(request):
-    auth.logout(request)
-    return redirect(reverse('login'))
+    def get(request:HttpRequest) -> HttpResponse:
+        auth.logout(request)
+        return redirect(reverse('login'))

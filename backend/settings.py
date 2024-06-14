@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #api e libs django
+    'corsheaders',
     'rest_framework',
     'djoser',
     #...
@@ -61,6 +62,9 @@ ROLEPERMISSIONS_MODULE = 'backend.roles'
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
   
+CORS_ALLOW_ALL_ORIGINS = True
+# especifica quais cabeçalhos o servidor pode receber!
+CORS_ALLOW_HEADERS = ['x-csrftoken','content-type','accept']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,6 +76,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #extensão do django interface
     'django.middleware.locale.LocaleMiddleware',
+    #cors django
+    'corsheaders.middleware.CorsMiddleware',
     
 ]
 
@@ -143,7 +149,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'templates/static'),)
 STATIC_ROOT = os.path.join('static')
 

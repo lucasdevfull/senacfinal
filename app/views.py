@@ -1,26 +1,34 @@
 import json
-
+from typing import Any,Dict
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import permission_required,login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.messages import constants
 from django.contrib import messages 
 from django.urls import reverse
+from django.views import View
+from django.utils.decorators import method_decorator 
 from django.db import transaction,IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpRequest,HttpResponse
 from authentication.models import User
 from rolepermissions.roles import assign_role
 from rolepermissions.permissions import revoke_permission
 from .models import Produto,Categoria,Fabricante
 # Create your views here.
-def home(request):
-    template_name ='products/home.html'
-    return render(request,template_name)
 
-def listar_produto(request):
-    if request.method == 'GET':
-        fabricante= request.GET.get('fabricante')
-        categoria = request.GET.get('categoria')
+class HomeView(View):
+    template_name ='products/home.html'
+    def get(self,request:HttpRequest) -> HttpResponse:
+        return render(request,self.template_name)
+
+class ProdutoListView(View):
+    
+    template_name = 'products/listar_produto.html'
+    
+    def get(self,request:HttpRequest) -> HttpResponse:
+        
+        fabricante:str = request.GET.get('fabricante')
+        categoria:str = request.GET.get('categoria')
         produtos = Produto.objects.all()
 
         todos_produtos = []
@@ -28,8 +36,8 @@ def listar_produto(request):
             categoria_id = Categoria.objects.filter(pk=int(categoria)).first().pk
             for produto in produtos:
                 if produto.categoria.pk == categoria_id:
-                    todos_produtos.append(produto)
-        
+                   todos_produtos.append(produto)
+            
         if fabricante:
             fabricante_id=Fabricante.objects.filter(pk=int(fabricante)).first().pk
             for produto in produtos:
@@ -38,67 +46,64 @@ def listar_produto(request):
         user = User.objects.get(id=1)
         assign_role(user, "change")
         revoke_permission(user, "change_product")
-        template_name = 'products/listar_produto.html'
+        
         context = {
-            'produtos': todos_produtos if categoria else produtos,
-            'categorias': Categoria.objects.all(),
-            'fabricantes': Fabricante.objects.all()
+                'produtos': todos_produtos if categoria else produtos,
+                'categorias': Categoria.objects.all(),
+                'fabricantes': Fabricante.objects.all()
         }
-        return render(request,template_name,context)
+        return render(request,self.template_name,context)
 
-def adicionar_categoria(request):
-    if request.method =='POST':
-        categoria=request.POST.get('categoria')
-        
-        categoria=Categoria(nome=categoria)
-
-        categoria.save()
-        return redirect(reverse('adicionar'))
-    template_name = 'products/adicionar_categoria.html' 
-    return render(request,template_name)
-
-def adicionar_fabricante(request):
-    if request.method =='POST':
-        fabricante=request.POST.get('fabricante')
-        
-        fabricante=Fabricante(nome=fabricante)
-
-        fabricante.save()
-        return redirect(reverse('adicionar'))
-    template_name = 'products/adicionar_fabricante.html' 
-    return render(request,template_name)
+@method_decorator([csrf_exempt],name='dispatch')
+class CategoriaView(View):
+    def post(self,request:HttpRequest) -> JsonResponse:
+        try:
+            data = json.loads(request.body)
+            print(data)
+            categoria=Categoria.objects.create(nome=data.get('categoria'))
+            return JsonResponse({'messages':'Categoria adicionada com sucesso!','categoria':categoria.nome})
+        except json.JSONDecodeError:
+            return JsonResponse({'error':'JSON invalido '})
+class FabricanteView(View):
+    def post(self,request:HttpRequest) -> JsonResponse:
+        try:
+            data = json.loads(request.body)
+            print(data)
+            fabricante=Fabricante.objects.create(nome=data.get('fabricante'))
+            return JsonResponse({'message':'Fabricante adicionado com sucesso!','fabricante':fabricante.nome})
+        except json.JSONDecodeError:
+            return JsonResponse({'message':'Json invalido'})
     
-def adicionar_produto(request):
-    if request.method == 'GET':
+class ProdutoView(View):
+    template_name = 'products/adicionar_produto.html'
+    def get(self,request:HttpRequest) -> HttpResponse:
         fabricante = Fabricante.objects.all()
         categoria = Categoria.objects.all()
         context = {'fabricante':fabricante,
-                   'categorias':categoria}
-        template_name = 'products/adicionar_produto.html' 
-        return render(request,template_name,context)
-    elif request.method == 'POST':
+                    'categorias':categoria} 
+        return render(request,self.template_name,context)
+    def post(self,request:HttpRequest) -> HttpResponse:
         nome_produto = request.POST.get('nome_produto')
         descricao = request.POST.get('descricao')
         preco = request.POST.get('preco')
         quantidade = request.POST.get('quantidade') 
         fabricante_id = request.POST.get('fabricante')
         categoria_id = request.POST.get('categoria')
-
-        
+    
         with transaction.atomic():
             try:
                 fabricante = Fabricante.objects.get(id=fabricante_id)
                 categoria = Categoria.objects.get(id=categoria_id)
                 
                 produto = Produto(
-                    user=request.user,
-                    nome_produto=nome_produto,
-                    descricao=descricao,
-                    preco=preco,
-                    estoque=quantidade,
-                    fabricante=fabricante,
-                    categoria=categoria
-                )
+                        user=request.user,
+                        nome_produto=nome_produto,
+                        descricao=descricao,
+                        preco=preco,
+                        estoque=quantidade,
+                        fabricante=fabricante,
+                        categoria=categoria
+                    )
                 produto.save()
                 messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
                 return redirect(reverse('home'))
@@ -108,7 +113,7 @@ def adicionar_produto(request):
                 return redirect(reverse('adicionar'))
             
             
-@csrf_exempt
+#@csrf_exempt
 def details_produto(request,id):
     if request.method == 'GET':
         produto = get_object_or_404(Produto,id=id)
@@ -123,7 +128,7 @@ def details_produto(request,id):
         }
 
         # Converte o dicionário em uma string JSON
-        produto_serializer = json.dumps(produto_dict)
+        produto_serializer = json.dumps(produto_dict) 
         
         if produto:
             return JsonResponse({"message": "success", "produto": produto_serializer})
