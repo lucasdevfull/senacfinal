@@ -67,25 +67,25 @@
             
             <div id="modal_fabricante" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                 <div class="bg-white p-8 rounded-md">
-                    <form onsubmit="formFabricante()" method="POST">{% csrf_token %}
+                    <form onsubmit="formFabricante()">{% csrf_token %}
                         <div class="flex gap-4 justify-between">
                             <h3 class="text-lg">Adicione o fabricante</h3>
                             <button onclick="closeModalFabricante()" type="button" class="text-right">&times;</button>
                         </div>
                         <input class="rounded-md" name="fabricante" id="fabricante" type="text" placeholder="Fabricante...">
-                        <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                        <button onclick="return submitFabricante()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
                     </form>
                 </div>
             </div>
             <div id="modal_categoria" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                 <div class="bg-white p-8 rounded-md">
-                    <form onsubmit="formCategoria()" method="POST">{% csrf_token %}
+                    <form onsubmit="formCategoria()">{% csrf_token %}
                         <div class="flex gap-4 justify-between">
                             <h3 class="text-lg">Adicione a categoria</h3>
                             <button onclick="closeModalCategoria()" type="button" class="text-right">&times;</button>
                         </div>
                         <input class="rounded-md" name="categoria" id="categoria" type="text" placeholder="Categoria...">
-                        <button type="submit" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                        <button onclick="return submitCatgoria()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
                         
                     </form>
                 </div>

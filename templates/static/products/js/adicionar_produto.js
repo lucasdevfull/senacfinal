@@ -17,7 +17,7 @@ const openModalFabricante = () => {
 
 async function formCategoria() {
     
-    const csrftoken = document.getElementsByName('csrfmiddlewaretoken')
+    //const csrftoken = document.getElementsByName('csrfmiddlewaretoken')
     const formData = {
         categoria: document.getElementById('categoria').value
     }
@@ -27,7 +27,7 @@ async function formCategoria() {
             {
                 method:'POST',
                 headers :{
-                'X-CSRFToken': csrftoken,
+                //'X-CSRFToken': csrftoken,
                 'Content-Type': 'application/json',
                 },
                 body:JSON.stringify(formData)
@@ -45,10 +45,17 @@ async function formCategoria() {
     closeModalCategoria()
 }
 
+const submitCatgoria = () =>{
+    const categoria = document.getElementById('categoria').value
+    if(categoria.trim() === '') {
+        return false
+    }
+    return true
+}
 async function formFabricante() {
     
 
-    const csrftoken = document.getElementsByName('csrfmiddlewaretoken')
+    //const csrftoken = document.getElementsByName('csrfmiddlewaretoken')
     const formData = {
         fabricante:document.getElementById('fabricante').value
     }
@@ -58,7 +65,7 @@ async function formFabricante() {
             {
                 method: 'POST',
                 headers :{
-                    'X-CSRFToken': csrftoken,
+                    //'X-CSRFToken': csrftoken,
                     'Content-Type': 'application/json',
                 },
                 body:JSON.stringify(formData)
@@ -72,6 +79,14 @@ async function formFabricante() {
         console.error(`Erro ao enviar os dados! ${error}`)
     }
     closeModalFabricante()
+}
+
+const submitFabricante = () => {
+    const fabricante = document.getElementById('fabricante').value
+    if(fabricante.trim() === '') {
+        return false
+    }
+    return true
 }
 
 const maskpreco = (event) => {
