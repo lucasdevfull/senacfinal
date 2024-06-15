@@ -62,9 +62,9 @@ ROLEPERMISSIONS_MODULE = 'backend.roles'
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
   
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
 # especifica quais cabeçalhos o servidor pode receber!
-CORS_ALLOW_HEADERS = ['x-csrftoken','content-type','accept']
+#CORS_ALLOW_HEADERS = ['content-type','accept']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,7 +77,7 @@ MIDDLEWARE = [
     #extensão do django interface
     'django.middleware.locale.LocaleMiddleware',
     #cors django
-    'corsheaders.middleware.CorsMiddleware',
+    #'corsheaders.middleware.CorsMiddleware',
     
 ]
 

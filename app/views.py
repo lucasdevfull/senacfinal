@@ -64,6 +64,8 @@ class CategoriaView(View):
             return JsonResponse({'messages':'Categoria adicionada com sucesso!','categoria':categoria.nome})
         except json.JSONDecodeError:
             return JsonResponse({'error':'JSON invalido '})
+
+@method_decorator([csrf_exempt],name='dispatch')
 class FabricanteView(View):
     def post(self,request:HttpRequest) -> JsonResponse:
         try:
@@ -134,7 +136,7 @@ def details_produto(request,id):
             return JsonResponse({"message": "success", "produto": produto_serializer})
         return JsonResponse({"message": "error"})
 
-def editar_produto(request,id):
+def editar_produto(request:HttpRequest,id) -> HttpResponse:
     produto = get_object_or_404(Produto,id=id)
     context = {'produto':produto}
     if request.method == 'POST':
