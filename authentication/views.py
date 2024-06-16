@@ -8,14 +8,12 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.messages import constants
 
-# Create your views here.
 class RegisterView(View):
     template_name: str = "registration/cadastro.html" 
-
     def get(self,request:HttpRequest) -> HttpResponse:    
         return render(request,self.template_name)
-        
     def post(self,request:HttpRequest) -> HttpResponse:
+        
         username: str = request.POST.get('name')
         email: str = request.POST.get('email')
         password: str = request.POST.get('password')
@@ -30,24 +28,29 @@ class RegisterView(View):
         try:
             users=User.objects.create_user(username=username,email=email,password=confirm_password, telefone=telefone)
             messages.add_message(request,constants.SUCCESS,'Usuário criado com sucesso')
+            
             return redirect(reverse('login'))
+            
         except IntegrityError:
             messages.add_message(request, constants.ERROR,f'Erro interno no servidor {IntegrityError}')
             return redirect(reverse('register')) 
 
 class LoginView(View):      
+
     template_name: str = "registration/login.html" 
+
     def get(self,request:HttpRequest) -> HttpResponse:    
         return render(request,self.template_name)
     def post(self,request:HttpRequest) ->HttpResponse:
+    
         username:str = request.POST.get('name')
         password:str = request.POST.get('password')
-
+        
         users =auth.authenticate(request,username=username,password=password)
-
+        
         if users:
             auth.login(request,users)
-            return redirect(reverse('home'))
+            return redirect(reverse('home'))    
         messages.add_message(request,constants.ERROR,'Username ou senha inválidos')
         return redirect(reverse('login'))
 class LogoutView(View):

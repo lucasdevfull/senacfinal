@@ -38,7 +38,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
-                        <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="select" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
+                        <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="select" name="fabricante_produto" id="fabricante_produto" placeholder="Fabricante">
                             <option value="" selected disabled>Fabricante</option>
                             {% for fabricantes in fabricante  %}
                                 <option value="{{fabricantes.id}}">{{fabricantes.nome}}</option>    
@@ -48,7 +48,7 @@
                     </div>
                     <div>
                         <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
-                        <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="categoria" id="categoria_produto" placeholder="Categoria">
+                        <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="categoria_produto" id="categoria_produto" placeholder="Categoria">
                             <option value="" selected disabled>Categoria</option>
                             {% for categoria in categorias %}
                                 <option value="{{categoria.id}}">{{categoria.nome}}</option>
@@ -58,8 +58,8 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-4 place-items-stretch gap-4 justify-items-center">
-                    <button onclick='openModalFabricante()' type='button' id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400" href="{% url 'fabricante' %}">Adicionar fabricante</button>
-                    <button onclick='openModalCategoria()' type='button' id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400" href="{% url 'categoria' %}">Adicionar categoria</button>
+                    <button onclick='openModalFabricante()' type='button' id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar fabricante</button>
+                    <button onclick='openModalCategoria()' type='button' id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar categoria</button>
                     <button class="w-full  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
                     <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
                 </div>
@@ -67,25 +67,25 @@
             
             <div id="modal_fabricante" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                 <div class="bg-white p-8 rounded-md">
-                    <form onsubmit="formFabricante()">{% csrf_token %}
+                    <form  method="POST">{% csrf_token %}
                         <div class="flex gap-4 justify-between">
                             <h3 class="text-lg">Adicione o fabricante</h3>
                             <button onclick="closeModalFabricante()" type="button" class="text-right">&times;</button>
                         </div>
                         <input class="rounded-md" name="fabricante" id="fabricante" type="text" placeholder="Fabricante...">
-                        <button onclick="return submitFabricante()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                        <button type="button" id="submit_form_add_fabricante" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
                     </form>
                 </div>
-            </div>
+            </div> 
             <div id="modal_categoria" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                 <div class="bg-white p-8 rounded-md">
-                    <form onsubmit="formCategoria()">{% csrf_token %}
+                    <form  method="POST">{% csrf_token %}
                         <div class="flex gap-4 justify-between">
                             <h3 class="text-lg">Adicione a categoria</h3>
-                            <button onclick="closeModalCategoria()" type="button" class="text-right">&times;</button>
+                            <button onclick ='closeModalCategoria()' type="button" class="text-right">&times;</button>
                         </div>
                         <input class="rounded-md" name="categoria" id="categoria" type="text" placeholder="Categoria...">
-                        <button onclick="return submitCatgoria()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                        <button type="button" id="submit_form_add_categoria" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
                         
                     </form>
                 </div>

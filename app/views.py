@@ -1,5 +1,4 @@
-import json
-from typing import Any,Dict
+import json 
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import permission_required,login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -27,8 +26,8 @@ class ProdutoListView(View):
     
     def get(self,request:HttpRequest) -> HttpResponse:
         
-        fabricante:str = request.GET.get('fabricante')
-        categoria:str = request.GET.get('categoria')
+        fabricante = request.GET.get('fabricante')
+        categoria = request.GET.get('categoria')
         produtos = Produto.objects.all()
 
         todos_produtos = []
@@ -60,10 +59,11 @@ class CategoriaView(View):
         try:
             data = json.loads(request.body)
             print(data)
-            categoria=Categoria.objects.create(nome=data.get('categoria'))
-            return JsonResponse({'messages':'Categoria adicionada com sucesso!','categoria':categoria.nome})
-        except json.JSONDecodeError:
-            return JsonResponse({'error':'JSON invalido '})
+            categoria = Categoria.objects.create(nome=data.get('categoria'))
+            return JsonResponse({"success": "Categoria cadastrada com sucesso!"})
+        except Exception:
+             return redirect(reverse('adicionar'))
+
 
 @method_decorator([csrf_exempt],name='dispatch')
 class FabricanteView(View):
@@ -73,9 +73,12 @@ class FabricanteView(View):
             print(data)
             fabricante=Fabricante.objects.create(nome=data.get('fabricante'))
             return JsonResponse({'message':'Fabricante adicionado com sucesso!','fabricante':fabricante.nome})
-        except json.JSONDecodeError:
-            return JsonResponse({'message':'Json invalido'})
-    
+        except json.JSONDecodeError as e:
+            messages.add_message(request,constants.ERROR,f'Erro ao enviar o cadastro. motivo {e}')
+            return redirect(reverse('adicionar'))
+        
+
+
 class ProdutoView(View):
     template_name = 'products/adicionar_produto.html'
     def get(self,request:HttpRequest) -> HttpResponse:
@@ -84,18 +87,20 @@ class ProdutoView(View):
         context = {'fabricante':fabricante,
                     'categorias':categoria} 
         return render(request,self.template_name,context)
+   
     def post(self,request:HttpRequest) -> HttpResponse:
+        print(request.POST)
         nome_produto = request.POST.get('nome_produto')
         descricao = request.POST.get('descricao')
         preco = request.POST.get('preco')
         quantidade = request.POST.get('quantidade') 
-        fabricante_id = request.POST.get('fabricante')
-        categoria_id = request.POST.get('categoria')
-    
+        fabricante = request.POST.get('fabricante_produto')
+        categoria = request.POST.get('categoria_produto')
+
         with transaction.atomic():
             try:
-                fabricante = Fabricante.objects.get(id=fabricante_id)
-                categoria = Categoria.objects.get(id=categoria_id)
+                fabricante = Fabricante.objects.get(pk=fabricante)
+                categoria = Categoria.objects.get(pk=categoria)
                 
                 produto = Produto(
                         user=request.user,
@@ -111,7 +116,7 @@ class ProdutoView(View):
                 return redirect(reverse('home'))
             except Exception as e:
                 print(str(e))
-                messages.add_message(request,constants.ERROR,f'Erro ao enviar o cadastro. motivo{e}')
+                messages.add_message(request,constants.ERROR,f'Erro ao enviar o cadastro. motivo {e}')
                 return redirect(reverse('adicionar'))
             
             

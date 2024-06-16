@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import os
 from django.contrib.messages import constants
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-x&p%@e3=1w(m%(!v+&%xgxd(f19zqtzg_bl56w@l-3cu!0l9$b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     #api e libs django
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
     'djoser',
     #...
     
@@ -57,14 +58,41 @@ INSTALLED_APPS = [
     #...
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    # Outras configurações, como tempo de expiração do token, etc.
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'authentication.serializers.UserCreateSerializer',
+        'user': 'authentication.serializers.UserSerializer',
+        'token': 'djoser.serializers.TokenSerializer',
+    'token_create': 'djoser.serializers.TokenCreateSerializer',
+    }
+}
+
 
 ROLEPERMISSIONS_MODULE = 'backend.roles'
 X_FRAME_OPTIONS = "SAMEORIGIN"
 SILENCED_SYSTEM_CHECKS = ["security.W019"]
   
-#CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 # especifica quais cabeçalhos o servidor pode receber!
-#CORS_ALLOW_HEADERS = ['content-type','accept']
+CORS_ALLOW_HEADERS = ['*']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,7 +105,7 @@ MIDDLEWARE = [
     #extensão do django interface
     'django.middleware.locale.LocaleMiddleware',
     #cors django
-    #'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     
 ]
 
