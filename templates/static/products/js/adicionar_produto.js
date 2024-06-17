@@ -23,23 +23,23 @@ document.getElementById("submit_form_add_categoria").addEventListener("click", (
         const formData = {
         categoria: document.getElementById('categoria').value
         };
-    try{
-        const response = await fetch('http://127.0.0.1:8000/adicionar_categoria/', {
-            method: 'POST',
-            headers: {
-                //'X-CSRFToken': csrftoken,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        })
-        if (!response) throw new Error('HTTP error')
+        try{
+            const response = await fetch('http://127.0.0.1:8000/adicionar_categoria/', {
+                method: 'POST',
+                headers: {
+                    //'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            if (!response) throw new Error('HTTP error')
 
-            const data = await response.json()
-            console.log(data)
+                const data = await response.json()
+                console.log(data)
         } catch(error) {
-            console.error(`Erro ao enviar os dados! ${error}`)
+                console.error(`Erro ao enviar os dados! ${error}`)
         } finally {
-            closeModalCategoria();
+                closeModalCategoria();
         }
     }
     formCategoria()

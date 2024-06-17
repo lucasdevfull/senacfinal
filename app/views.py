@@ -28,6 +28,7 @@ class ProdutoListView(View):
         
         fabricante = request.GET.get('fabricante')
         categoria = request.GET.get('categoria')
+        print(categoria)
         produtos = Produto.objects.all()
 
         todos_produtos = []
@@ -120,7 +121,7 @@ class ProdutoView(View):
                 return redirect(reverse('adicionar'))
             
             
-#@csrf_exempt
+@csrf_exempt
 def details_produto(request,id):
     if request.method == 'GET':
         produto = get_object_or_404(Produto,id=id)
@@ -141,20 +142,25 @@ def details_produto(request,id):
             return JsonResponse({"message": "success", "produto": produto_serializer})
         return JsonResponse({"message": "error"})
 
+@csrf_exempt
 def editar_produto(request:HttpRequest,id) -> HttpResponse:
     produto = get_object_or_404(Produto,id=id)
+    #fabricante = Fabricante.objects.get(id=id)
     context = {'produto':produto}
-    if request.method == 'POST':
-        produto.nome_produto = request.POST.get('produto')
-        produto.descricao = request.POST.get('descricao')
-        produto.preco = request.POST.get('preco')
-        produto.fabricante = request.POST.get('fabricante')
-        produto.categoria = request.POST.get('categoria')
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        print(data)
+        produto.nome_produto = data.get('nome_produto')
+        produto.descricao = data.get('descricao')
+        produto.preco = data.get('preco')
+        produto.estoque = data.get('quantidade')
+        produto.fabricante = data.get('fabricante')
+        produto.categoria = data.get('categoria')
         produto.save()
         return redirect(reverse('home'))
     return render(request,context)
 
-def deletar_produto(request,id):
+def deletar_produto(request:HttpRequest,id) -> HttpResponse:
     produto = get_object_or_404(Produto,id=id)
     template_name = 'products/deletar_produtos.html'
     context = {'produto':produto}
