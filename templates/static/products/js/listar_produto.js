@@ -7,6 +7,7 @@ const openmodal = () =>
 function showOnList(params) {
   //json.parse transforma o json  em um objeto javascript
     const produto_objeto = JSON.parse(params.produto);
+    document.getElementById('id').value = produto_objeto.id
     document.getElementById('nome_produto').value = produto_objeto.nome_produto
     document.getElementById('descricao_produto').value = produto_objeto.descricao
     document.getElementById('preco_produto').value = produto_objeto.preco

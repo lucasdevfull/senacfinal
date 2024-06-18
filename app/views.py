@@ -90,7 +90,7 @@ class ProdutoView(View):
         return render(request,self.template_name,context)
    
     def post(self,request:HttpRequest) -> HttpResponse:
-        print(request.POST)
+        
         nome_produto = request.POST.get('nome_produto')
         descricao = request.POST.get('descricao')
         preco = request.POST.get('preco')
@@ -127,6 +127,7 @@ def details_produto(request,id):
         produto = get_object_or_404(Produto,id=id)
         
         produto_dict = {
+            'id':str(produto.id),
             'nome_produto': str(produto.nome_produto),
             'descricao': str(produto.descricao),
             'preco': str(produto.preco),
@@ -139,26 +140,38 @@ def details_produto(request,id):
         produto_serializer = json.dumps(produto_dict) 
         
         if produto:
-            return JsonResponse({"message": "success", "produto": produto_serializer})
+            return render(request,'products/details_produto.html',{'produto':produto})
+            #return JsonResponse({"message": "success", "produto": produto_serializer})
         return JsonResponse({"message": "error"})
 
-@csrf_exempt
+
 def editar_produto(request:HttpRequest,id) -> HttpResponse:
-    produto = get_object_or_404(Produto,id=id)
-    #fabricante = Fabricante.objects.get(id=id)
-    context = {'produto':produto}
-    if request.method == 'PUT':
-        data = json.loads(request.body)
-        print(data)
-        produto.nome_produto = data.get('nome_produto')
-        produto.descricao = data.get('descricao')
-        produto.preco = data.get('preco')
-        produto.estoque = data.get('quantidade')
-        produto.fabricante = data.get('fabricante')
-        produto.categoria = data.get('categoria')
+  
+    if request.method == 'GET':
+        produto = get_object_or_404(Produto,id=id)
+        #fabricante = Fabricante.objects.get(id=id)
+        template_name = 'products/editar_produto.html'
+        context = {'produto':produto}
+        return render(request,template_name,context)
+    if request.method == 'POST':
+        #data = json.loads(request.body)
+        #print(data)
+        produto = get_object_or_404(Produto,id=id)
+        produto.nome_produto = request.POST.get('nome_produto')
+        produto.descricao = request.POST.get('descricao')
+        produto.preco = request.POST.get('preco')
+        produto.estoque = request.POST.get('quantidade')
+        fabricante = request.POST.get('fabricante')
+        categoria = request.POST.get('categoria')
+        categorias = get_object_or_404(Categoria, nome = categoria)
+        fabricantes = get_object_or_404(Fabricante, nome = fabricante)
+        
+        produto.fabricante = fabricantes
+        produto.categoria = categorias
         produto.save()
-        return redirect(reverse('home'))
-    return render(request,context)
+        messages.add_message(request,constants.SUCCESS,'Atualizado com sucesso')
+        return redirect(reverse('listar'))
+    
 
 def deletar_produto(request:HttpRequest,id) -> HttpResponse:
     produto = get_object_or_404(Produto,id=id)

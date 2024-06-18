@@ -1,4 +1,5 @@
-document.getElementById('update').addEventListener('click', () =>{
+const envio= () => {
+    const id = document.getElementById('id').value
     async function formUpdate(id) {
         if (!id) return console.error(`Id (${id}) is not valid`);
 
@@ -13,7 +14,7 @@ document.getElementById('update').addEventListener('click', () =>{
         
         try{
             const response = await fetch(`http://127.0.0.1:8000/editar_produto/${id}/`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'aplication/json',
                 },
@@ -28,5 +29,5 @@ document.getElementById('update').addEventListener('click', () =>{
         } 
 
     }
-    formUpdate('2')
-})
+    formUpdate(id)
+}

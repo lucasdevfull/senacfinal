@@ -1,96 +1,96 @@
 {% extends 'index.html' %}
 {% load static %}
 {% block 'body'%}
-{% include 'partials/sidebar.html' %}
-    <div class="container mx-auto">
-        <div class="p-4 sm:ml-64">
-            <h1 class="p-5 font-medium text-3xl dark:text-white">Cadastro de produtos:</h1>
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="p-4 mb-4 text-sm rounded-lg {{message.tags}}">
-                        <span class="font-medium">{{message}}</span>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            <form class="rounded-md space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'adicionar' %}" method="POST">
-                {% csrf_token %}
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="nome_produto">Nome do produto:</label>
-                    <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
-                </div>
-                
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-300 pb-2" for="descricao_produto">Descrição do produto:</label>
-                    <textarea class="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto"></textarea>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
-                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
-                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="quantidade" id="quantidade_produto" placeholder="Quantidade do produto">
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
-                        <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="select" name="fabricante_produto" id="fabricante_produto" placeholder="Fabricante">
-                            <option value="" selected disabled>Fabricante</option>
-                            {% for fabricantes in fabricante  %}
-                                <option value="{{fabricantes.id}}">{{fabricantes.nome}}</option>    
-                            {% endfor %}
-                        </select>
-                        
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
-                        <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="categoria_produto" id="categoria_produto" placeholder="Categoria">
-                            <option value="" selected disabled>Categoria</option>
-                            {% for categoria in categorias %}
-                                <option value="{{categoria.id}}">{{categoria.nome}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-4 place-items-stretch gap-4 justify-items-center">
-                    <button onclick='openModalFabricante()' type='button' id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar fabricante</button>
-                    <button onclick='openModalCategoria()' type='button' id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar categoria</button>
-                    <button class="w-full  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
-                    <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
-                </div>
-            </form>
-            
-            <div id="modal_fabricante" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-                <div class="bg-white p-8 rounded-md">
-                    <form  method="POST">{% csrf_token %}
-                        <div class="flex gap-4 justify-between">
-                            <h3 class="text-lg">Adicione o fabricante</h3>
-                            <button onclick="closeModalFabricante()" type="button" class="text-right">&times;</button>
+    {% include 'partials/sidebar.html' %}
+        <div class="container mx-auto">
+            <div class="p-4 sm:ml-64">
+                <h1 class="p-5 font-medium text-3xl dark:text-white">Cadastro de produtos:</h1>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="p-4 mb-4 text-sm rounded-lg {{message.tags}}">
+                            <span class="font-medium">{{message}}</span>
                         </div>
-                        <input class="rounded-md" name="fabricante" id="fabricante" type="text" placeholder="Fabricante...">
-                        <button type="button" id="submit_form_add_fabricante" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
-                    </form>
-                </div>
-            </div> 
-            <div id="modal_categoria" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-                <div class="bg-white p-8 rounded-md">
-                    <form  method="POST">{% csrf_token %}
-                        <div class="flex gap-4 justify-between">
-                            <h3 class="text-lg">Adicione a categoria</h3>
-                            <button onclick ='closeModalCategoria()' type="button" class="text-right">&times;</button>
+                    {% endfor %}
+                {% endif %}
+                <form class="rounded-md space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'adicionar' %}" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="nome_produto">Nome do produto:</label>
+                        <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="descricao_produto">Descrição do produto:</label>
+                        <textarea class="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
+                            <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
                         </div>
-                        <input class="rounded-md" name="categoria" id="categoria" type="text" placeholder="Categoria...">
-                        <button type="button" id="submit_form_add_categoria" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>   
-                    </form>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
+                            <input class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="quantidade" id="quantidade_produto" placeholder="Quantidade do produto">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
+                            <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="select" name="fabricante_produto" id="fabricante_produto" placeholder="Fabricante">
+                                <option value="" selected disabled>Fabricante</option>
+                                {% for fabricantes in fabricante  %}
+                                    <option value="{{fabricantes.id}}">{{fabricantes.nome}}</option>    
+                                {% endfor %}
+                            </select>
+                            
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
+                            <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="categoria_produto" id="categoria_produto" placeholder="Categoria">
+                                <option value="" selected disabled>Categoria</option>
+                                {% for categoria in categorias %}
+                                    <option value="{{categoria.id}}">{{categoria.nome}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 place-items-stretch gap-4 justify-items-center">
+                        <button onclick='openModalFabricante()' type='button' id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar fabricante</button>
+                        <button onclick='openModalCategoria()' type='button' id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar categoria</button>
+                        <button class="w-full  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
+                        <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
+                    </div>
+                </form>
+                
+                <div id="modal_fabricante" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                    <div class="bg-white p-8 rounded-md">
+                        <form  method="POST">{% csrf_token %}
+                            <div class="flex gap-4 justify-between">
+                                <h3 class="text-lg">Adicione o fabricante</h3>
+                                <button onclick="closeModalFabricante()" type="button" class="text-right">&times;</button>
+                            </div>
+                            <input class="rounded-md" name="fabricante" id="fabricante" type="text" placeholder="Fabricante...">
+                            <button type="button" id="submit_form_add_fabricante" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                        </form>
+                    </div>
+                </div> 
+                <div id="modal_categoria" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+                    <div class="bg-white p-8 rounded-md">
+                        <form  method="POST">{% csrf_token %}
+                            <div class="flex gap-4 justify-between">
+                                <h3 class="text-lg">Adicione a categoria</h3>
+                                <button onclick ='closeModalCategoria()' type="button" class="text-right">&times;</button>
+                            </div>
+                            <input class="rounded-md" name="categoria" id="categoria" type="text" placeholder="Categoria...">
+                            <button type="button" id="submit_form_add_categoria" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>   
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>  
+        </div>  
 {% endblock %}
 {% block 'scripts' %}
     <script src="{% static 'products/js/adicionar_produto.js' %}"></script>
