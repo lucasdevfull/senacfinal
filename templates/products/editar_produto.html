@@ -1,6 +1,7 @@
 {% extends 'index.html' %}
 
 {% block 'body' %}
+
 <div class="container mx-auto">
     <div class="p-4 sm:ml-64">
         <div class="fixed inset-0 bg-gray-800 bg-transparent flex items-center justify-center" id="modal_form">
@@ -8,13 +9,13 @@
 
                 <form action="{% url 'editar' produto.id %}"  class="rounded-md space-y-6 md:space-y-8" method="POST">{% csrf_token %}
                     <div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label for="id" class="inline-block text-gray-700 dark:text-gray-300 pb-2">Id do produto</label>
+                                <label for="id" class="inline-block text-gray-700 dark:text-gray-300 pb-2">Id do produto:</label>
                                 <input value="{{produto.id}}" class="inline-block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" id="id" type="text" readonly>
                             </div>
                             <div>
-                                <label for="nome_produto" class="inline-block text-gray-700 dark:text-gray-300 pb-2">Nome do produto</label>
+                                <label for="nome_produto" class="inline-block text-gray-700 dark:text-gray-300 pb-2">Nome do produto:</label>
                                 <input value="{{produto.nome_produto}}" class="inline-block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
                             </div>
                         </div>
@@ -25,7 +26,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
-                            <input value="{{produto.preco}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
+                            <input value="{{produto.preco}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="preco" id="preco_produto" placeholder="Preço">
                         </div>
                         <div>
                             <label class="block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
@@ -35,15 +36,42 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
-                            <input value="{{produto.fabricante}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
+                            <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante" readonly>
+                                {% for fabricante in fabricantes %}
+                                    <option value="{{ fabricante.nome }}" {% if produto.fabricante == fabricante %} selected {% endif %}>{{ fabricante.nome }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div>
                             <label class="block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
-                            <input value="{{produto.categoria}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="categoria" id="categoria_produto" placeholder="Categoria">
+                            <select class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="categoria" id="categoria_produto" placeholder="Categoria" readonly>
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria.nome }}" {% if produto.categoria == categoria %} selected {% endif %}>{{ categoria.nome }}</option>
+                                {% endfor %}
+                                    
+                            </select>
                         </div>
                     </div>
-                    <button type="submit" id='update'>Enviar</button>
-                    <button type="button" id='delete'>Deletar</button>
+                    <div class="flex gap-2 mt-2">
+                        <button class="max-w-40  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit" id='update'>Enviar</button>
+                        <button class="max-w-40 px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button" id='delete'><a href="{% url 'listar' %}">Cancelar</a></button>
+                    </div>
                 </form> 
+<script>
+    document.getElementById('update').addEventListener('submit',(e) =>{
+        e.preventDefault()
+        const preco = document.getElementById('preco_produto').value
+        if (preco.trim() !== '') {
+            const precoCorrigido = preco.replace(',', '.');
+            if (precoCorrigido.trim() === '') {
+                const preco_float = parseFloat(precoCorrigido)
+            }
+            if (!isNaN(preco_float)) {
+                document.getElementById('preco_produto').value = preco_float.toFixed(2)
+                document.getElementById('update').submit()
+            }
+        }
+    })
+</script>
 {% endblock 'body' %}
     

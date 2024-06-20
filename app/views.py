@@ -149,25 +149,30 @@ def editar_produto(request:HttpRequest,id) -> HttpResponse:
   
     if request.method == 'GET':
         produto = get_object_or_404(Produto,id=id)
-        #fabricante = Fabricante.objects.get(id=id)
+        fabricante = Fabricante.objects.all()
+        categoria = Categoria.objects.all()
         template_name = 'products/editar_produto.html'
-        context = {'produto':produto}
+        context = {'produto':produto,
+        'fabricantes': fabricante,
+        'categorias': categoria}
         return render(request,template_name,context)
     if request.method == 'POST':
-        #data = json.loads(request.body)
-        #print(data)
+        
         produto = get_object_or_404(Produto,id=id)
         produto.nome_produto = request.POST.get('nome_produto')
         produto.descricao = request.POST.get('descricao')
-        produto.preco = request.POST.get('preco')
         produto.estoque = request.POST.get('quantidade')
+        preco =  request.POST.get('preco')
         fabricante = request.POST.get('fabricante')
         categoria = request.POST.get('categoria')
-        categorias = get_object_or_404(Categoria, nome = categoria)
-        fabricantes = get_object_or_404(Fabricante, nome = fabricante)
         
-        produto.fabricante = fabricantes
-        produto.categoria = categorias
+        produto.preco = float(preco.replace(',','.'))
+        if fabricante is not None:
+           fabricante = get_object_or_404(Fabricante, nome=fabricante)
+           produto.fabricante = fabricante
+        if categoria is not None:
+            categoria = get_object_or_404(Categoria, nome=categoria)
+            produto.categoria = categoria 
         produto.save()
         messages.add_message(request,constants.SUCCESS,'Atualizado com sucesso')
         return redirect(reverse('listar'))
@@ -175,13 +180,10 @@ def editar_produto(request:HttpRequest,id) -> HttpResponse:
 
 def deletar_produto(request:HttpRequest,id) -> HttpResponse:
     produto = get_object_or_404(Produto,id=id)
-    template_name = 'products/deletar_produtos.html'
-    context = {'produto':produto}
-    if request.method == 'POST':
-        produto.delete()
-        return redirect(reverse('home'))
-    return render(request,template_name,context)
+    #template_name = 'products/details_produto.html'
+    #if request.method == 'POST':
+    produto.delete()
+    messages.add_message(request,constants.SUCCESS,'Deletado com sucesso')
+    return redirect(reverse('listar'))
+    #return render(request,template_name)
 
-def relatorio(request):
-    categoria = Categoria.objects.all()
-    return print(categoria)

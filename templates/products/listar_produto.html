@@ -52,66 +52,15 @@
                             <td class="px-4 py-3 whitespace-nowrap text-center text-sm font-medium text-gray-900 dark:text-gray-100"><a class="hover:bg-gray-700 px-3 py-1 rounded-lg" onclick="getProductDetails({{produto.id}});"><a href="{% url 'detalhe' produto.id %}">{{produto.nome_produto}}</a></td>
                             <td class="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">{{produto.categoria}}</td>
                             <td class="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">{{produto.estoque}}</td>
-                            <td class="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">R${{produto.preco}}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-700 dark:text-gray-300">{{produto.preco}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div class="fixed inset-0 bg-gray-800 bg-transparent flex items-center justify-center hidden " id="modal_form">
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 md:w-1/2">
-                <div class="flex justify-between mb-4">
-                    <h2 class="text-gray-300 text-lg">Detalhes do produto</h2>
-                    <button onclick="closemodal()" type="button" class="hover:bg-gray-700 rounded-md px-3 py-1" id="close" >&times;</button>
-                </div>
-                <form class="rounded-md space-y-6 md:space-y-8">{% csrf_token %}
-                    
-                    <div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label for="id" class="inline-block text-gray-700 dark:text-gray-300 pb-2">Id do produto</label>
-                                <input value="{{produto.id}}" class="inline-block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" id="id" type="text">
-                            </div>
-                            <div>
-                                <label for="nome_produto" class="inline-block text-gray-700 dark:text-gray-300 pb-2">Nome do produto</label>
-                                <input value="{{produto.nome_produto}}" class="inline-block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="nome_produto" id="nome_produto" placeholder="Nome do produto">
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 dark:text-gray-300 pb-2" for="descricao_produto">Descrição do produto:</label>
-                        <textarea class="block w-full resize-none rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" name="descricao" id="descricao_produto" cols="30" rows="5" placeholder="Descrição do produto">{{produto.descricao}}</textarea>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="inline-block text-gray-700 dark:text-gray-300 pb-2" for="preco_produto">Preço:</label>
-                            <input value="{{produto.preco}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="preco" id="preco_produto" placeholder="Preço">
-                        </div>
-                        <div>
-                            <label class="inline-block text-gray-700 dark:text-gray-300 pb-2" for="quantidade_produto">Quantidade do produto:</label>
-                            <input value="{{produto.estoque}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="number" name="quantidade" id="quantidade_produto" placeholder="Quantidade do produto">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="inline-block text-gray-700 dark:text-gray-300 pb-2" for="fabricante_produto">Fabricante:</label>
-                            <input value="{{produto.fabricante}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="fabricante" id="fabricante_produto" placeholder="Fabricante">
-                        </div>
-                        <div>
-                            <label class="inline-block text-gray-700 dark:text-gray-300 pb-2" for="categoria_produto">Categoria:</label>
-                            <input value="{{produto.categoria}}" class="block w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 p-2" type="text" name="categoria" id="categoria_produto" placeholder="Categoria">
-                        </div>
-                    </div>
-                    <a href="">Editar</a>
-                    <button type="button" id='delete'>Deletar</button>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
-    </div>
-</div>
+
     
 {% endblock %}
 {% block 'scripts' %}
