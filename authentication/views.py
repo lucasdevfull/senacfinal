@@ -46,6 +46,7 @@ class LoginView(View):
         username:str = request.POST.get('name')
         password:str = request.POST.get('password')
         
+        
         users =auth.authenticate(request,username=username,password=password)
         
         if users:
@@ -55,6 +56,6 @@ class LoginView(View):
         return redirect(reverse('login'))
 class LogoutView(View):
 
-    def get(request:HttpRequest) -> HttpResponse:
+    def get(self,request:HttpRequest) -> HttpResponse:
         auth.logout(request)
         return redirect(reverse('login'))
