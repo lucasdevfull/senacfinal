@@ -121,9 +121,11 @@ class ProdutoView(View):
                 return redirect(reverse('adicionar'))
             
             
-@csrf_exempt
-def details_produto(request,id):
-    if request.method == 'GET':
+@method_decorator([csrf_exempt],name='dispatch')
+class ProdutoDetailsView(View):
+    
+    def get(self,request:HttpRequest,id) -> JsonResponse:
+    
         produto = get_object_or_404(Produto,id=id)
         
         produto_dict = {
@@ -135,7 +137,6 @@ def details_produto(request,id):
             'fabricante': str(produto.fabricante),
             'categoria': str(produto.categoria),
         }
-
         # Converte o dicionário em uma string JSON
         produto_serializer = json.dumps(produto_dict) 
         
@@ -144,19 +145,21 @@ def details_produto(request,id):
             #return JsonResponse({"message": "success", "produto": produto_serializer})
         return JsonResponse({"message": "error"})
 
-
-def editar_produto(request:HttpRequest,id) -> HttpResponse:
-  
-    if request.method == 'GET':
+class ProdutoUpdateView(View):
+    
+    def get(self,request:HttpRequest,id) -> HttpResponse:
+    
+    
         produto = get_object_or_404(Produto,id=id)
         fabricante = Fabricante.objects.all()
         categoria = Categoria.objects.all()
         template_name = 'products/editar_produto.html'
         context = {'produto':produto,
-        'fabricantes': fabricante,
-        'categorias': categoria}
+                    'fabricantes': fabricante,
+                    'categorias': categoria}
         return render(request,template_name,context)
-    if request.method == 'POST':
+    
+    def post(self,request:HttpRequest,id) -> HttpResponse:
         
         produto = get_object_or_404(Produto,id=id)
         produto.nome_produto = request.POST.get('nome_produto')
@@ -168,8 +171,8 @@ def editar_produto(request:HttpRequest,id) -> HttpResponse:
         
         produto.preco = float(preco.replace(',','.'))
         if fabricante is not None:
-           fabricante = get_object_or_404(Fabricante, nome=fabricante)
-           produto.fabricante = fabricante
+            fabricante = get_object_or_404(Fabricante, nome=fabricante)
+            produto.fabricante = fabricante
         if categoria is not None:
             categoria = get_object_or_404(Categoria, nome=categoria)
             produto.categoria = categoria 
@@ -177,13 +180,14 @@ def editar_produto(request:HttpRequest,id) -> HttpResponse:
         messages.add_message(request,constants.SUCCESS,'Atualizado com sucesso')
         return redirect(reverse('listar'))
     
+class ProdutoDeleteView(View):
 
-def deletar_produto(request:HttpRequest,id) -> HttpResponse:
-    produto = get_object_or_404(Produto,id=id)
-    #template_name = 'products/details_produto.html'
-    #if request.method == 'POST':
-    produto.delete()
-    messages.add_message(request,constants.SUCCESS,'Deletado com sucesso')
-    return redirect(reverse('listar'))
-    #return render(request,template_name)
+    def get(self,request:HttpRequest,id) -> HttpResponse:
+        produto = get_object_or_404(Produto,id=id)
+        #template_name = 'products/details_produto.html'
+        #if request.method == 'POST':
+        produto.delete()
+        messages.add_message(request,constants.SUCCESS,'Deletado com sucesso')
+        return redirect(reverse('listar'))
+        #return render(request,template_name)
 
