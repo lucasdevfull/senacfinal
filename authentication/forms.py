@@ -1,11 +1,14 @@
-from django.contrib.auth import forms
+from typing import Mapping
+from django.contrib.auth import forms as auth_forms
+from django import forms
 from .models import User 
 
-class UserChangeForm(forms.UserChangeForm):
-    class Meta(forms.UserChangeForm.Meta):
+class UserChangeForm(auth_forms.UserChangeForm):
+    class Meta(auth_forms.UserChangeForm.Meta):
         model = User
 
-class UserCreationForm(forms.UserCreationForm):
-    class Meta(forms.UserCreationForm.Meta):
+class UserCreationForm(auth_forms.UserCreationForm):
+    class Meta(auth_forms.UserCreationForm.Meta):
         model = User
+
 

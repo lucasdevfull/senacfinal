@@ -7,6 +7,7 @@ from .forms import UserChangeForm,UserCreationForm
 
 
 
+
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
