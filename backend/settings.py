@@ -48,7 +48,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'corsheaders',
     #...
-    
+    #forms..
+    "crispy_forms",
+    "crispy_tailwind",
+    #...
     #apps
     'authentication',
     'app',
@@ -58,6 +61,11 @@ INSTALLED_APPS = [
     "rolepermissions",
     #...
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+CRISPY_TEMPLATE_PACK = "tailwind"
+
 SITE_ID = 1
 
 ROLEPERMISSIONS_MODULE = 'backend.roles'
