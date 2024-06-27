@@ -49,8 +49,7 @@ INSTALLED_APPS = [
     'corsheaders',
     #...
     #forms..
-    "crispy_forms",
-    "crispy_tailwind",
+
     #...
     #apps
     'authentication',
