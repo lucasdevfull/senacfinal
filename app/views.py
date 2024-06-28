@@ -13,6 +13,7 @@ from authentication.models import User
 from rolepermissions.roles import assign_role
 from rolepermissions.permissions import revoke_permission
 from .models import Produto,Categoria,Fabricante
+from backend.mixin import GetMixin
 # Create your views here.
 
 class HomeView(LoginRequiredMixin,View):
@@ -21,7 +22,7 @@ class HomeView(LoginRequiredMixin,View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request,self.template_name)
 
-class ProdutoListView(LoginRequiredMixin,View):
+class ProdutoListView(LoginRequiredMixin,GetMixin,View):
 
     template_name = 'products/listar_produto.html'
     login_url = reverse_lazy ( 'login' )
@@ -30,7 +31,7 @@ class ProdutoListView(LoginRequiredMixin,View):
         fabricante = request.GET.get('fabricante')
         categoria = request.GET.get('categoria')
         print(categoria)
-        produtos = Produto.objects.all()
+        produtos = self.get_object_all(Produto)
 
         todos_produtos = []
         if categoria:
@@ -86,12 +87,12 @@ class FabricanteView(LoginRequiredMixin,CsrfExemptMixin,View):
 
 
 
-class ProdutoView(LoginRequiredMixin,View):
+class ProdutoView(LoginRequiredMixin,GetMixin,View):
     template_name = 'products/adicionar_produto.html'
     login_url = reverse_lazy ( 'login' )
     def get(self,request:HttpRequest) -> HttpResponse:
-        fabricante = Fabricante.objects.all()
-        categoria = Categoria.objects.all()
+        fabricante = self.get_object_all(Fabricante)
+        categoria = self.get_object_all(Categoria)
         context = {'fabricante':fabricante,
                     'categorias':categoria}
         return render(request,self.template_name,context)
