@@ -11,6 +11,10 @@
                             <span class="font-medium">{{message}}</span>
                         </div>
                     {% endfor %}
+                    {% else %}
+                    <div class=" hidden p-4 mb-4 text-sm rounded-lg ">
+                        <span class="font-medium" id="msgs"></span>
+                    </div>
                 {% endif %}
                 <form class="rounded-md space-y-6 md:space-y-8 shadow-md p-6 bg-white dark:bg-gray-800" action="{% url 'adicionar' %}" method="POST">
                     {% csrf_token %}
@@ -61,31 +65,32 @@
                         <button onclick='openModalFabricante()' type='button' id ="modalfab" class="w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar fabricante</button>
                         <button onclick='openModalCategoria()' type='button' id ='modalcate' class=" w-full px-4 py-2 bg-blue-600 text-white text-center border border-solid border-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-inset focus:ring-blue-400">Adicionar categoria</button>
                         <button class="w-full  px-4 py-2 bg-green-600 text-white border border-solid border-green-700 rounded-lg hover:bg-green-700 focus:ring-2 focus:ring-inset focus:ring-green-400" type="submit">Cadastrar</button>
-                        <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400" type="button">Cancelar</button>
+                        <button class="w-full px-4 py-2 bg-red-600 text-white border border-solid border-red-700 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-inset focus:ring-red-400"><a href="{% url 'listar' %}"> Cancelar</a></button>
                     </div>
                 </form>
                 
                 <div id="modal_fabricante" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                     <div class="bg-white p-8 rounded-md">
-                        <form  method="POST">{% csrf_token %}
+                        <form  method="POST" id="form-fab">
                             <div class="flex gap-4 justify-between">
                                 <h3 class="text-lg">Adicione o fabricante</h3>
                                 <button onclick="closeModalFabricante()" type="button" class="text-right">&times;</button>
                             </div>
                             <input class="rounded-md" name="fabricante" id="fabricante" type="text" placeholder="Fabricante...">
-                            <button type="button" id="submit_form_add_fabricante" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>
+                            <input type="submit" id="submit_form_add_fabricante" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md" value="Adicionar">
                         </form>
                     </div>
                 </div> 
                 <div id="modal_categoria" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
                     <div class="bg-white p-8 rounded-md">
-                        <form  method="POST">{% csrf_token %}
+                        <form  method="POST" id="form-cat">
+                            
                             <div class="flex gap-4 justify-between">
                                 <h3 class="text-lg">Adicione a categoria</h3>
                                 <button onclick ='closeModalCategoria()' type="button" class="text-right">&times;</button>
                             </div>
                             <input class="rounded-md" name="categoria" id="categoria" type="text" placeholder="Categoria...">
-                            <button type="button" id="submit_form_add_categoria" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md">Adicionar</button>   
+                            <input type="submit" id="submit_form_add_categoria" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md" value="Adicionar">
                         </form>
                     </div>
                 </div>

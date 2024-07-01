@@ -5,7 +5,7 @@ const validateFormRegister = () => {
     const password1 = document.getElementById('password').value;
     const password2 = document.getElementById('repeat_password').value;    
     const phone = document.getElementById('telefone').value;
-    
+    const error_cadastro = document.getElementById('error_cadastro');
     const error = document.getElementById('error_cadastro');
     const error_span = document.getElementById('span_error');
 
@@ -69,6 +69,8 @@ const validateFormRegister = () => {
         return false
     }
 
+
+    timeError(error_cadastro)
     return true
     
 }

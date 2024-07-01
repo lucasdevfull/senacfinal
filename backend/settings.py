@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from decouple import config
 from datetime import timedelta
 from pathlib import Path
 import os
@@ -21,13 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x&p%@e3=1w(m%(!v+&%xgxd(f19zqtzg_bl56w@l-3cu!0l9$b'
-
+SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',  # necessário para allauth
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
+    #'allauth.socialaccount',
     'corsheaders',
     #...
     #forms..
@@ -61,9 +61,7 @@ INSTALLED_APPS = [
     #...
 ]
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 
-CRISPY_TEMPLATE_PACK = "tailwind"
 
 SITE_ID = 1
 
@@ -73,7 +71,7 @@ SILENCED_SYSTEM_CHECKS = ["security.W019"]
   
 CORS_ALLOW_ALL_ORIGINS = True
 # especifica quais cabeçalhos o servidor pode receber!
-CORS_ALLOW_HEADERS = ['*']
+#CORS_ALLOW_HEADERS = ['*']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -147,7 +145,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+LOGIN_URL = '/'
+LOGIN_REDIRECT_URL = '/listar_produto/'
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -189,3 +188,10 @@ MESSAGE_TAGS = {
 }
 
 
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD',cast=str)  # Substitua pela sua senha
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

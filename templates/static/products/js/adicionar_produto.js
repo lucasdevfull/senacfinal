@@ -1,3 +1,5 @@
+const csrfToken =  document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
 const closeModalCategoria = () => {
     
     document.getElementById('modal_categoria').classList.add('hidden')
@@ -15,66 +17,81 @@ const openModalFabricante = () => {
     document.getElementById('modal_fabricante').classList.remove('hidden')
 }
 
-
-document.getElementById("submit_form_add_categoria").addEventListener("click", () => {
-
-    async function formCategoria() {
-        //const csrftoken = document.getElementsByName('csrfmiddlewaretoken');
-        const formData = {
-        categoria: document.getElementById('categoria').value
-        };
-        try{
-            const response = await fetch('http://127.0.0.1:8000/adicionar_categoria/', {
-                method: 'POST',
-                headers: {
-                    //'X-CSRFToken': csrftoken,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            })
-            if (!response) throw new Error('HTTP error')
-
-                const data = await response.json()
-                console.log(data)
-        } catch(error) {
-                console.error(`Erro ao enviar os dados! ${error}`)
-        } finally {
-                closeModalCategoria();
-        }
+document.getElementById("form-cat").addEventListener("submit", (e) => {
+    e.preventDefault()
+    
+    const formData = {
+        categoria: document.getElementById('categoria').value,
     }
-    formCategoria()
-})
 
-document.getElementById('submit_form_add_fabricante').addEventListener('click',() => { 
-    async function formFabricante() {
-        
-        //const csrftoken = document.getElementsByName('csrfmiddlewaretoken')
-        const formData = {
-            fabricante:document.getElementById('fabricante').value
-        }
-        try {
-            const response = await fetch(
-                'http://127.0.0.1:8000/adicionar_fabricante/',
-                {
-                    method: 'POST',
-                    headers :{
-                        //'X-CSRFToken': csrftoken,
-                        'Content-Type': 'application/json',
-                    },
-                    body:JSON.stringify(formData)
-                }
-            )
-            if (!response) throw new Error('HTTP error')
+    var response = fetch('/adicionar_categoria/', {
+                            headers: {
+                                'X-CSRFToken': csrfToken,
+                                'Content-Type': "application/json"
+                            },
+                            method: 'POST',
+                            mode: 'same-origin',
+                            body: JSON.stringify(formData),
+                        }).then(
+                            res => res.json()
+                        ).then((data) => {
+                            let categoria = document.getElementById('categoria_produto')
+                            categoria.options[categoria.options.length] = new Option(data.categoria.nome, data.categoria.id)
+                            categoria.value = data.categoria.id;
+                        }).catch(
+                            error => {
+                                let message = document.getElementById('msgs')
+                                console.log(message);
+                                message.innerHTML = `Erro ao enviar os dados! ${error}`
+                                message.classList.remove('hidden')
 
-            const data = await response.json()
-            console.log(data)
-        } catch(error) {
-            console.error(`Erro ao enviar os dados! ${error}`)
-        } finally {
-        closeModalFabricante()
-        }
-    }
-    formFabricante()
+                                setTimeout(() => {
+                                    message.classList.add('hidden')
+                                }, 5000)
+                            }
+                        ).finally(
+                            closeModalCategoria()
+                        );
+});   
+
+
+
+document.getElementById("form-fab").addEventListener("submit",(e) => {
+    e.preventDefault() 
+    
+    const formData = {
+        fabricante:document.getElementById('fabricante').value
+    };
+    
+
+    var response = fetch('/adicionar_fabricante/',{
+                            headers: {
+                                'X-CSRFToken': csrfToken,
+                                'Content-Type': "application/json"
+                        },
+                        method: 'POST',
+                        mode: 'same-origin',
+                        body: JSON.stringify(formData),
+                        }).then(
+                            res => res.json()
+                        ).then((data) => {
+                            let fabricante = document.getElementById('fabricante_produto')
+                            fabricante.options[fabricante.options.length] = new Option(data.fabricante.nome, data.fabricante.id)
+                            fabricante.value = data.fabricante.id;
+                        }).catch(
+                            error => {
+                                let message = document.getElementById('msgs')
+                                console.log(message);
+                                message.innerHTML = `Erro ao enviar os dados! ${error}`
+                                message.classList.remove('hidden')
+
+                                setTimeout(() => {
+                                    message.classList.add('hidden')
+                                }, 5000)
+                            }
+                        ).finally(
+                            closeModalFabricante()
+                        );
 })
 
 

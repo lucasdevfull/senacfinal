@@ -2,7 +2,7 @@ const validateFormLogin = () => {
     
     const username = document.getElementById('name').value;
     const password = document.getElementById('password').value;
-
+    const messages = document.getElementById('message');
     const error = document.getElementById('error_login');
     const error_span = document.getElementById('span_error');
 
@@ -23,6 +23,7 @@ const validateFormLogin = () => {
         
         return false
     }
+    timeError(messages)
     return true
 }
 
