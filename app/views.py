@@ -1,19 +1,17 @@
 import json
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .mixin import CsrfExemptMixin
 from django.contrib.messages import constants
 from django.contrib import messages
-from django.urls import reverse,reverse_lazy
 from django.views import View
-from django.utils.decorators import method_decorator
+
 from django.db import transaction,IntegrityError
 from django.http import JsonResponse,HttpRequest,HttpResponse
 from authentication.models import User
 from rolepermissions.roles import assign_role
 from rolepermissions.permissions import revoke_permission
 from .models import Produto,Categoria,Fabricante
-from backend.mixin import GetMixin
+from backend.shortcuts import redirect_url
 # Create your views here.
 
 class HomeView(LoginRequiredMixin,View):
@@ -22,16 +20,15 @@ class HomeView(LoginRequiredMixin,View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request,self.template_name)
 
-class ProdutoListView(LoginRequiredMixin,GetMixin,View):
+class ProdutoListView(LoginRequiredMixin,View):
 
     template_name = 'products/listar_produto.html'
-    login_url = reverse_lazy ( 'login' )
     def get(self, request: HttpRequest) -> HttpResponse:
 
         fabricante = request.GET.get('fabricante')
         categoria = request.GET.get('categoria')
-        print(categoria)
-        produtos = self.get_object_all(Produto)
+        
+        produtos = Produto.objects.all()
 
         todos_produtos = []
         if categoria:
@@ -50,49 +47,55 @@ class ProdutoListView(LoginRequiredMixin,GetMixin,View):
         revoke_permission(user, "change_product")
 
         context = {
-                'produtos': todos_produtos if categoria else produtos,
+                'produtos': todos_produtos if categoria or fabricante  else produtos,
                 'categorias': Categoria.objects.all(),
                 'fabricantes': Fabricante.objects.all()
         }
         return render(request,self.template_name,context)
 
 
-class CategoriaView(LoginRequiredMixin,CsrfExemptMixin,View):
+class CategoriaView(LoginRequiredMixin,View):
 
-    login_url = reverse_lazy('login')
-    def post(self,request:HttpRequest) -> JsonResponse:
-
+    # def post(self,request:HttpRequest) -> JsonResponse:
+    def post(self, request):
         try:
             data = json.loads(request.body)
-            print(data)
             categoria = Categoria.objects.create(nome=data.get('categoria'))
-            return JsonResponse({"success": "Categoria cadastrada com sucesso!"})
-        except Exception:
-             return redirect(reverse('adicionar'))
+            context = {
+                'nome': categoria.nome,
+                'id': categoria.id  
+            }
+
+            return JsonResponse({"success": "Categoria cadastrada com sucesso!", "categoria": context})
+        except json.JSONDecodeError as e:
+            messages.add_message(request,constants.ERROR, f'Erro ao enviar o cadastro. motivo {e}')
+            return JsonResponse({"error"})
 
 
 
-class FabricanteView(LoginRequiredMixin,CsrfExemptMixin,View):
+class FabricanteView(LoginRequiredMixin,View):
 
-    login_url = reverse_lazy ('login')
     def post(self,request:HttpRequest) -> JsonResponse:
         try:
             data = json.loads(request.body)
-            print(data)
             fabricante=Fabricante.objects.create(nome=data.get('fabricante'))
-            return JsonResponse({'message':'Fabricante adicionado com sucesso!','fabricante':fabricante.nome})
+            context = {
+                'nome': fabricante.nome,
+                'id': fabricante.id
+            }
+            return JsonResponse({'message':'Fabricante adicionado com sucesso!','fabricante': context})
         except json.JSONDecodeError as e:
             messages.add_message(request,constants.ERROR,f'Erro ao enviar o cadastro. motivo {e}')
-            return redirect(reverse('adicionar'))
+            return JsonResponse({"error"})
 
 
 
-class ProdutoView(LoginRequiredMixin,GetMixin,View):
+class ProdutoView(LoginRequiredMixin,View):
     template_name = 'products/adicionar_produto.html'
-    login_url = reverse_lazy ( 'login' )
+    
     def get(self,request:HttpRequest) -> HttpResponse:
-        fabricante = self.get_object_all(Fabricante)
-        categoria = self.get_object_all(Categoria)
+        fabricante = Fabricante.objects.all()
+        categoria = Categoria.objects.all()
         context = {'fabricante':fabricante,
                     'categorias':categoria}
         return render(request,self.template_name,context)
@@ -106,6 +109,9 @@ class ProdutoView(LoginRequiredMixin,GetMixin,View):
         fabricante = request.POST.get('fabricante_produto')
         categoria = request.POST.get('categoria_produto')
 
+        if Produto.objects.filter(nome_produto=nome_produto).exists():
+            messages.add_message(request,constants.ERROR,'Produto já existente')
+            return redirect_url('adicionar')
         with transaction.atomic():
             try:
                 fabricante = Fabricante.objects.get(pk=fabricante)
@@ -122,17 +128,18 @@ class ProdutoView(LoginRequiredMixin,GetMixin,View):
                     )
                 produto.save()
                 messages.add_message(request,constants.SUCCESS,'Produto salvo com sucesso!')
-                return redirect(reverse('home'))
-            except Exception as e:
+                return redirect_url('listar')
+            except IntegrityError as e:
                 print(str(e))
                 messages.add_message(request,constants.ERROR,f'Erro ao enviar o cadastro. motivo {e}')
-                return redirect(reverse('adicionar'))
+                return redirect_url('adicionar')
 
 
 
-class ProdutoDetailsView(LoginRequiredMixin,CsrfExemptMixin,View):
+class ProdutoDetailsView(LoginRequiredMixin,View):
 
-    login_url = reverse_lazy ('login')
+     
+    template_name = 'products/details_produto.html'
     def get(self,request:HttpRequest,id) -> JsonResponse:
 
         produto = get_object_or_404(Produto,id=id)
@@ -150,13 +157,14 @@ class ProdutoDetailsView(LoginRequiredMixin,CsrfExemptMixin,View):
         produto_serializer = json.dumps(produto_dict)
 
         if produto:
-            return render(request,'products/details_produto.html',{'produto':produto})
+            return render(request,self.template_name,{'produto':produto})
             #return JsonResponse({"message": "success", "produto": produto_serializer})
         return JsonResponse({"message": "error"})
 
 class ProdutoUpdateView(LoginRequiredMixin,View):
+    
     template_name = 'products/editar_produto.html'
-    login_url = reverse_lazy('login')
+    
     def get(self,request:HttpRequest,id) -> HttpResponse:
         produto = get_object_or_404(Produto,id=id)
 
@@ -184,7 +192,7 @@ class ProdutoUpdateView(LoginRequiredMixin,View):
             produto.categoria = categoria
         produto.save()
         messages.add_message(request,constants.SUCCESS,'Atualizado com sucesso')
-        return redirect(reverse('listar'))
+        return redirect_url('listar')
 
 class ProdutoDeleteView(LoginRequiredMixin,View):
 
@@ -192,6 +200,6 @@ class ProdutoDeleteView(LoginRequiredMixin,View):
         produto = get_object_or_404(Produto,id=id)
         produto.delete()
         messages.add_message(request,constants.SUCCESS,'Deletado com sucesso')
-        return redirect(reverse('listar'))
+        return redirect_url('listar')
 
 
