@@ -6,12 +6,13 @@ from django.contrib import messages
 from django.views import View
 
 from django.db import transaction,IntegrityError
+from django.utils.decorators import method_decorator
 from django.http import JsonResponse,HttpRequest,HttpResponse
 from authentication.models import User
-from rolepermissions.roles import assign_role
-from rolepermissions.permissions import revoke_permission
+from rolepermissions.checkers import has_permission,has_role
 from .models import Produto,Categoria,Fabricante
 from backend.shortcuts import redirect_url
+from backend.roles import ProdutoManager
 # Create your views here.
 
 class HomeView(LoginRequiredMixin,View):
@@ -20,44 +21,49 @@ class HomeView(LoginRequiredMixin,View):
     def get(self, request: HttpRequest) -> HttpResponse:
         return render(request,self.template_name)
 
+
 class ProdutoListView(LoginRequiredMixin,View):
 
     template_name = 'products/listar_produto.html'
+
+
+    
     def get(self, request: HttpRequest) -> HttpResponse:
+        user=request.user
+        if has_role(user, 'manager') or has_permission(user,'view_product') or user.is_staff or user.is_superuser:
+            fabricante = request.GET.get('fabricante')
+            categoria = request.GET.get('categoria')
+            
+            produtos = Produto.objects.all()
 
-        fabricante = request.GET.get('fabricante')
-        categoria = request.GET.get('categoria')
-        
-        produtos = Produto.objects.all()
+            todos_produtos = []
+            if categoria:
+                categoria_id = Categoria.objects.filter(pk=int(categoria)).first().pk
+                for produto in produtos:
+                    if produto.categoria.pk == categoria_id:
+                        todos_produtos.append(produto)
 
-        todos_produtos = []
-        if categoria:
-            categoria_id = Categoria.objects.filter(pk=int(categoria)).first().pk
-            for produto in produtos:
-                if produto.categoria.pk == categoria_id:
-                   todos_produtos.append(produto)
+            if fabricante:
+                fabricante_id=Fabricante.objects.filter(pk=int(fabricante)).first().pk
+                for produto in produtos:
+                    if produto.fabricante.pk == fabricante_id:
+                        todos_produtos.append(produto)
+            
 
-        if fabricante:
-            fabricante_id=Fabricante.objects.filter(pk=int(fabricante)).first().pk
-            for produto in produtos:
-                if produto.fabricante.pk == fabricante_id:
-                    todos_produtos.append(produto)
-        user = User.objects.get(id=1)
-        assign_role(user, "change")
-        revoke_permission(user, "change_product")
-
-        context = {
-                'produtos': todos_produtos if categoria or fabricante  else produtos,
-                'categorias': Categoria.objects.all(),
-                'fabricantes': Fabricante.objects.all()
-        }
+            context = {
+                    'produtos': todos_produtos if categoria or fabricante  else produtos,
+                    'categorias': Categoria.objects.all(),
+                    'fabricantes': Fabricante.objects.all()
+            }
         return render(request,self.template_name,context)
 
 
 class CategoriaView(LoginRequiredMixin,View):
 
     # def post(self,request:HttpRequest) -> JsonResponse:
+    
     def post(self, request):
+
         try:
             data = json.loads(request.body)
             categoria = Categoria.objects.create(nome=data.get('categoria'))

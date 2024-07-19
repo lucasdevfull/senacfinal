@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async,async_to_sync
 from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
@@ -6,11 +7,12 @@ from django.http import HttpResponse,HttpRequest
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.messages import constants
-from django.contrib.auth.views import RedirectURLMixin
 from django.contrib.auth import get_user_model
 from backend.shortcuts import redirect_url
+
 User= get_user_model()
-class RegisterView(RedirectURLMixin,View):
+
+class RegisterView(View):
     template_name: str = "registration/cadastro.html"
 
     def get(self, request:HttpRequest) -> HttpResponse:
@@ -55,8 +57,9 @@ class LoginView(View):
         
         if users:
             auth.login(request, users)
-            return redirect_url('listar')
-        messages.add_message(request,constants.ERROR,'Username ou senha inválidos')
+        else:
+            messages.add_message(request,constants.ERROR,'Username ou senha inválidos')
+            return redirect_url('login')
         return redirect_url('login')
 class LogoutView(View):
     
