@@ -86,7 +86,7 @@ MIDDLEWARE = [
     #cors django
     'corsheaders.middleware.CorsMiddleware',
     'allauth.account.middleware.AccountMiddleware',  # Middleware do Allauth
-    
+    'authentication.middleware.admin_middleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -127,6 +127,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # default
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+ASGI_APPLICATION = 'backend.asgi.application'
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
