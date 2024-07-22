@@ -62,11 +62,12 @@ class CategoriaView(LoginRequiredMixin,View):
 
     # def post(self,request:HttpRequest) -> JsonResponse:
     
-    def post(self, request):
-
+    def post(self, request: HttpRequest) -> JsonResponse:
+        print(json.loads(request.body))
         try:
             data = json.loads(request.body)
             categoria = Categoria.objects.create(nome=data.get('categoria'))
+
             context = {
                 'nome': categoria.nome,
                 'id': categoria.id  
@@ -146,7 +147,7 @@ class ProdutoDetailsView(LoginRequiredMixin,View):
 
      
     template_name = 'products/details_produto.html'
-    def get(self,request:HttpRequest,id) -> JsonResponse:
+    def get(self,request:HttpRequest,id:int) -> HttpResponse:
 
         produto = get_object_or_404(Produto,id=id)
 
@@ -160,7 +161,7 @@ class ProdutoDetailsView(LoginRequiredMixin,View):
             'categoria': str(produto.categoria),
         }
         # Converte o dicionário em uma string JSON
-        produto_serializer = json.dumps(produto_dict)
+        #produto_serializer = json.dumps(produto_dict)
 
         if produto:
             return render(request,self.template_name,{'produto':produto})
@@ -171,7 +172,7 @@ class ProdutoUpdateView(LoginRequiredMixin,View):
     
     template_name = 'products/editar_produto.html'
     
-    def get(self,request:HttpRequest,id) -> HttpResponse:
+    def get(self,request:HttpRequest,id:int) -> HttpResponse:
         produto = get_object_or_404(Produto,id=id)
 
         context = {'produto':produto,
@@ -179,7 +180,7 @@ class ProdutoUpdateView(LoginRequiredMixin,View):
                     'categorias': Categoria.objects.all()}
         return render(request,self.template_name,context)
 
-    def post(self,request:HttpRequest,id) -> HttpResponse:
+    def post(self,request:HttpRequest,id:int) -> HttpResponse:
 
         produto = get_object_or_404(Produto,id=id)
         produto.nome_produto = request.POST.get('nome_produto')
@@ -202,7 +203,7 @@ class ProdutoUpdateView(LoginRequiredMixin,View):
 
 class ProdutoDeleteView(LoginRequiredMixin,View):
 
-    def get(self,request:HttpRequest,id) -> HttpResponse:
+    def get(self,request:HttpRequest,id:int) -> HttpResponse:
         produto = get_object_or_404(Produto,id=id)
         produto.delete()
         messages.add_message(request,constants.SUCCESS,'Deletado com sucesso')

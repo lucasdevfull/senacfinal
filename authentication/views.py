@@ -1,8 +1,7 @@
-from asgiref.sync import sync_to_async,async_to_sync
 from django.db.utils import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
-from django.urls import reverse,reverse_lazy
+from django.urls import reverse_lazy
 from django.http import HttpResponse,HttpRequest
 from django.contrib import auth
 from django.contrib import messages
