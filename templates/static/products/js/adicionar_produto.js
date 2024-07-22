@@ -1,5 +1,76 @@
 const csrfToken =  document.getElementsByName('csrfmiddlewaretoken')[0].value;
+class FetchDados {
 
+    constructor(token,data) {
+        this.token = token
+        this.data = data
+    }
+
+    fetchCategoria() {
+        
+        console.log(this.data)
+        var response =  fetch('/adicionar_categoria/', {
+            headers: {
+                'X-CSRFToken': this.token,
+                'Content-Type': "application/json"
+            },
+            method: 'POST',
+            mode: 'same-origin',
+            body: JSON.stringify({categoria:this.data}),
+        }).then(
+            res => res.json()
+        ).then((data) => {
+            let categoria = document.getElementById('categoria_produto')
+            categoria.options[categoria.options.length] = new Option(data.categoria.nome, data.categoria.id)
+            categoria.value = data.categoria.id;
+        }).catch(
+            error => {
+                let message = document.getElementById('msgs')
+                console.log(message);
+                message.innerHTML = `Erro ao enviar os dados! ${error}`
+                message.classList.remove('hidden')
+
+                setTimeout(() => {
+                    message.classList.add('hidden')
+                }, 5000)
+            }
+        ).finally(
+            closeModalCategoria()
+        );
+    }
+
+    fetchFabricante() {
+        
+        var response =  fetch('/adicionar_fabricante/', {
+            headers: {
+                'X-CSRFToken': this.token,
+                'Content-Type': "application/json"
+            },
+            method: 'POST',
+            mode: 'same-origin',
+            body: JSON.stringify({fabricante:this.data}),
+        }).then(
+            res => res.json()
+        ).then((data) => {
+            let fabricante = document.getElementById('fabricante_produto')
+            fabricante.options[fabricante.options.length] = new Option(data.fabricante.nome, data.fabricante.id)
+            fabricante.value = data.fabricante.id;
+        }).catch(
+            error => {
+                let message = document.getElementById('msgs')
+                console.log(message);
+                message.innerHTML = `Erro ao enviar os dados! ${error}`
+                message.classList.remove('hidden')
+
+                setTimeout(() => {
+                    message.classList.add('hidden')
+                }, 5000)
+            }
+        ).finally(
+            closeModalFabricante()
+        );
+    }
+}
 const closeModalCategoria = () => {
     
     document.getElementById('modal_categoria').classList.add('hidden')
@@ -20,78 +91,21 @@ const openModalFabricante = () => {
 document.getElementById("form-cat").addEventListener("submit", (e) => {
     e.preventDefault()
     
-    const formData = {
-        categoria: document.getElementById('categoria').value,
-    }
-
-    var response = fetch('/adicionar_categoria/', {
-                            headers: {
-                                'X-CSRFToken': csrfToken,
-                                'Content-Type': "application/json"
-                            },
-                            method: 'POST',
-                            mode: 'same-origin',
-                            body: JSON.stringify(formData),
-                        }).then(
-                            res => res.json()
-                        ).then((data) => {
-                            let categoria = document.getElementById('categoria_produto')
-                            categoria.options[categoria.options.length] = new Option(data.categoria.nome, data.categoria.id)
-                            categoria.value = data.categoria.id;
-                        }).catch(
-                            error => {
-                                let message = document.getElementById('msgs')
-                                console.log(message);
-                                message.innerHTML = `Erro ao enviar os dados! ${error}`
-                                message.classList.remove('hidden')
-
-                                setTimeout(() => {
-                                    message.classList.add('hidden')
-                                }, 5000)
-                            }
-                        ).finally(
-                            closeModalCategoria()
-                        );
+    const categoria = document.getElementById('categoria').value
+    const fetching = new FetchDados(csrfToken,categoria)
+    return fetching.fetchCategoria()
+    
 });   
 
 
 
 document.getElementById("form-fab").addEventListener("submit",(e) => {
     e.preventDefault() 
-    
-    const formData = {
-        fabricante:document.getElementById('fabricante').value
-    };
-    
 
-    var response = fetch('/adicionar_fabricante/',{
-                            headers: {
-                                'X-CSRFToken': csrfToken,
-                                'Content-Type': "application/json"
-                        },
-                        method: 'POST',
-                        mode: 'same-origin',
-                        body: JSON.stringify(formData),
-                        }).then(
-                            res => res.json()
-                        ).then((data) => {
-                            let fabricante = document.getElementById('fabricante_produto')
-                            fabricante.options[fabricante.options.length] = new Option(data.fabricante.nome, data.fabricante.id)
-                            fabricante.value = data.fabricante.id;
-                        }).catch(
-                            error => {
-                                let message = document.getElementById('msgs')
-                                console.log(message);
-                                message.innerHTML = `Erro ao enviar os dados! ${error}`
-                                message.classList.remove('hidden')
-
-                                setTimeout(() => {
-                                    message.classList.add('hidden')
-                                }, 5000)
-                            }
-                        ).finally(
-                            closeModalFabricante()
-                        );
+    const fabricante = document.getElementById('fabricante').value
+    const fetching = new FetchDados(csrfToken,fabricante)
+    return fetching.fetchFabricante()
+    
 })
 
 

@@ -1,29 +1,34 @@
+class FormValidatorLogin {
+
+    constructor(formId,errorId, message){
+        this.formId = document.getElementById(formId)
+        this.username = document.getElementById('name').value;
+        this.password = document.getElementById('password').value;
+        this.errorId = document.getElementById(errorId)
+        this.message = document.getElementById(message)
+    }
+
+    validate() {
+        if (this.username.trim() ===''){
+            this.errorId.textContent = 'Username é obrigatório'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
+
+        if (this.password.trim() ===''){
+            this.errorId.textContent = 'Senha é obrigatório'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
+        timeError(this.message)
+        return true
+    }
+}
+
 const validateFormLogin = () => {
-    
-    const username = document.getElementById('name').value;
-    const password = document.getElementById('password').value;
-    const messages = document.getElementById('message');
-    const error = document.getElementById('error_login');
-    const error_span = document.getElementById('span_error');
-
-    if (username === '') {
-        
-        error_span.textContent = 'Username é obrigatório'
-        error.classList.remove('hidden')
-        timeError(error)
-        
-        return false
-    }
-
-    if (password === '') {
-        
-        error_span.textContent = 'Os campos de senha não coincidem'
-        error.classList.remove('hidden')
-        timeError(error)
-        
-        return false
-    }
-    timeError(messages)
-    return true
+    const form = new FormValidatorLogin('form_login', 'error_login', 'message').validate()
+    return form   
 }
 

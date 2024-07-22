@@ -1,93 +1,85 @@
-const validateFormRegister = () => {
-    
-    const username = document.getElementById('name').value;
-    const email  = document.getElementById('email').value;
-    const password1 = document.getElementById('password').value;
-    const password2 = document.getElementById('repeat_password').value;    
-    const phone = document.getElementById('telefone').value;
-    const error_cadastro = document.getElementById('error_cadastro');
-    const error = document.getElementById('error_cadastro');
-    const error_span = document.getElementById('span_error');
+class FormValidatorRegister {
 
-    if (username.trim() === '') {
-
-        error_span.textContent = 'Username é obrigatório!'
-        error.classList.remove('hidden')
-        timeError(error) 
-
-        return false
-    
+    constructor(formId,errorId, message){
+        this.formId = document.getElementById(formId)
+        this.username = document.getElementById('name').value;
+        this.email = document.getElementById('email').value;
+        this.password1 = document.getElementById('password').value;
+        this.password2 = document.getElementById('repeat_password').value;
+        this.phone = document.getElementById('telefone').value;
+        this.errorId = document.getElementById(errorId)
+        this.message = document.getElementById(message)
     }
 
-    if (email.trim() === ''){
-        
-        error_span.textContent = 'Email é obrigatório!'
-        error_span.classList.remove('hidden')
-        timeError(error)
+    validate() {
 
-        return false 
-    
-    }
+        if (this.username.trim() === '') {
+            this.errorId.textContent = 'Username é obrigatório!'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
 
-    if (!isEmailValid(email)) {
-        error_span.textContent = 'Insira um email válido'
-        error_span.classList.remove('hidden')
-        timeError(error)
+        if (this.email.trim() === '') {
+            this.errorId.textContent = 'Email é obrigatório!'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
 
-        
-    }
+        if (!isEmailValid(this.email)) {
+            this.errorId.textContent = 'Insira um email válido!'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
 
-    if (password1.trim()<8) {
-        error_span.textContent = 'A senha deve conter pelo menos 8 caracteres!'
-        error.classList.remove('hidden')
-        timeError(error)
-    }
-    if (password1.trim() !== password2.trim()) { 
-        
-        error_span.textContent = 'Os campos de senha não coincidem!'
-        error.classList.remove('hidden')
-        timeError(error)
+        if (this.password1.trim() < 8) {
+            this.errorId.textContent = 'Senha deve ter pelo menos 8 caracteres!'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
 
-        return false
-    
-    }  else if (password1.trim() === '' || password2.trim()=== '') {
+        if (this.password1.trim() !== this.password2.trim()) {
+            this.errorId.textContent = 'As senhas devem ser iguais!'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        } else if (this.password1.trim() === '' || this.password2.trim() === '') {
+            this.errorId.textContent = 'Os campos de senha são obrigatórios!'
+        }
 
-        error_span.textContent = 'Os campos de senha são obrigatórios!'
-        error.classList.remove('hidden')
-        timeError(error)
+        if (this.phone.trim() === '') {
+            this.errorId.textContent = 'Telefone é obrigatório!'
+            this.errorId.classList.remove('hidden')
+            timeError(this.errorId)
+            return false
+        }
 
-        return false
-    
-    }
-
-    if (phone.trim() === '') {
-
-        error_span.textContent = 'Insira seu número de contato'
-        error.classList.remove('hidden')
-        timeError(error)
-
-        return false
-    }
-
-
-    timeError(error_cadastro)
-    return true
-    
-}
-// validação de email
-const isEmailValid = (email) => {
-    
-    // cria um regex para validar o email
-    const emailRegex = new RegExp(
-        //usuario12@host.com
-        /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$/
-    )
-    if(emailRegex.test(email)) {
         return true
     }
-    return false
-}
 
+    isEmailValid(email) {
+    
+        // cria um regex para validar o email
+        const emailRegex = new RegExp(
+            //usuario12@host.com
+            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,}$/
+        )
+        if(emailRegex.test(email)) {
+            return true
+        }
+        return false
+    }
+    
+
+}
+const validateFormRegister = () => {
+    const form =  new FormValidatorRegister('form_register', 'error_cadastro', 'message').validate()
+    return form
+    
+}
 
 const handlePhone = (event) => {
     let celular = event.target
