@@ -1,15 +1,16 @@
 const csrfToken =  document.getElementsByName('csrfmiddlewaretoken')[0].value;
 class FetchDados {
 
-    constructor(token,data) {
+    constructor(token,data,url) {
         this.token = token
         this.data = data
+        this.urls = url
     }
+    
 
-    fetchCategoria() {
+    fetchCategoria = () =>{
         
-        console.log(this.data)
-        var response =  fetch('/adicionar_categoria/', {
+        var response = fetch(this.urls, {
             headers: {
                 'X-CSRFToken': this.token,
                 'Content-Type': "application/json"
@@ -18,7 +19,7 @@ class FetchDados {
             mode: 'same-origin',
             body: JSON.stringify({categoria:this.data}),
         }).then(
-            res => res.json()
+           (res) => res.json()
         ).then((data) => {
             let categoria = document.getElementById('categoria_produto')
             categoria.options[categoria.options.length] = new Option(data.categoria.nome, data.categoria.id)
@@ -39,9 +40,9 @@ class FetchDados {
         );
     }
 
-    fetchFabricante() {
+    fetchFabricante = () => {
         
-        var response =  fetch('/adicionar_fabricante/', {
+        var response =  fetch(this.urls, {
             headers: {
                 'X-CSRFToken': this.token,
                 'Content-Type': "application/json"
@@ -71,8 +72,7 @@ class FetchDados {
         );
     }
 }
-const closeModalCategoria = () => {
-    
+const closeModalCategoria = () => { 
     document.getElementById('modal_categoria').classList.add('hidden')
 }
 
@@ -92,7 +92,8 @@ document.getElementById("form-cat").addEventListener("submit", (e) => {
     e.preventDefault()
     
     const categoria = document.getElementById('categoria').value
-    const fetching = new FetchDados(csrfToken,categoria)
+    const url = '/adicionar_categoria/'
+    const fetching = new FetchDados(csrfToken,categoria,url)
     return fetching.fetchCategoria()
     
 });   
@@ -103,27 +104,11 @@ document.getElementById("form-fab").addEventListener("submit",(e) => {
     e.preventDefault() 
 
     const fabricante = document.getElementById('fabricante').value
-    const fetching = new FetchDados(csrfToken,fabricante)
+    const url = '/adicionar_fabricante/'
+    const fetching = new FetchDados(csrfToken,fabricante,url)
     return fetching.fetchFabricante()
     
 })
-
-
-const maskpreco = (event) => {
-    const digitos = event.target.value
-    .split()
-    .filter(s => /\d/.test(s))
-    .join()
-    .padStart(3,'0')
-    const digitosFloat = digitos.slice(0, -2) + '.' + digitos.slice(-2)
-    event.target.value = moedamask(digitosFloat)
-}
-
-const moedamask = (valor, locale = 'pt-BR', currency = 'BRL') => {
-    return new Intl.NumberFormat(locale, {
-        style:'currency',
-        currency
-    }).format(valor)
-}
+  
 
 

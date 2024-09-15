@@ -77,7 +77,7 @@ class FormValidatorRegister {
 }
 const validateFormRegister = () => {
     const form =  new FormValidatorRegister('form_register', 'error_cadastro', 'message').validate()
-    return form
+    return form.validate()
     
 }
 

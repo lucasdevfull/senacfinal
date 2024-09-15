@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "senacfinal"
+version = "0.1.0"
+description = ""
+authors = ["Dante-Lucas <lucassilva270805@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.1.1"
+django-role-permissions = "^3.2.0"
+pillow = "^10.4.0"
+django-admin-interface = "^0.28.9"
+django-allauth = "^64.2.1"
+djangorestframework = "^3.15.2"
+django-cors-headers = "^4.4.0"
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.13.0"
+python-decouple = "^3.8"
+
+[tool.taskipy.tasks]
+server = "python manage.py runserver"
+make = "python manage.py makemigrations"
+migrate = "python manage.py migrate"
+create-admin = "python manage.py createsuperuser"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

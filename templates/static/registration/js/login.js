@@ -29,6 +29,6 @@ class FormValidatorLogin {
 
 const validateFormLogin = () => {
     const form = new FormValidatorLogin('form_login', 'error_login', 'message').validate()
-    return form   
+    return form.validate()   
 }
 
