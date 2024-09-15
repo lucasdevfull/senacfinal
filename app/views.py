@@ -4,9 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages import constants
 from django.contrib import messages
 from django.views import View
-
 from django.db import transaction,IntegrityError
-from django.utils.decorators import method_decorator
 from django.http import JsonResponse,HttpRequest,HttpResponse
 from authentication.models import User
 from rolepermissions.checkers import has_permission,has_role
@@ -30,12 +28,11 @@ class ProdutoListView(LoginRequiredMixin,View):
     
     def get(self, request: HttpRequest) -> HttpResponse:
         user=request.user
-        if has_role(user, 'manager') or has_permission(user,'view_product') or user.is_staff or user.is_superuser:
-            fabricante = request.GET.get('fabricante')
-            categoria = request.GET.get('categoria')
+        fabricante = request.GET.get('fabricante')
+        categoria = request.GET.get('categoria')
+        produtos = Produto.objects.all()
+        if has_role(user, 'manager') or has_permission(user,'view_product'):
             
-            produtos = Produto.objects.all()
-
             todos_produtos = []
             if categoria:
                 categoria_id = Categoria.objects.filter(pk=int(categoria)).first().pk
@@ -50,7 +47,7 @@ class ProdutoListView(LoginRequiredMixin,View):
                         todos_produtos.append(produto)
             
 
-            context = {
+        context = {
                     'produtos': todos_produtos if categoria or fabricante  else produtos,
                     'categorias': Categoria.objects.all(),
                     'fabricantes': Fabricante.objects.all()
@@ -63,7 +60,7 @@ class CategoriaView(LoginRequiredMixin,View):
     # def post(self,request:HttpRequest) -> JsonResponse:
     
     def post(self, request: HttpRequest) -> JsonResponse:
-        print(json.loads(request.body))
+        
         try:
             data = json.loads(request.body)
             categoria = Categoria.objects.create(nome=data.get('categoria'))

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',  # necessário para allauth
     'allauth',
     'allauth.account',
+    'rest_framework',
     #'allauth.socialaccount',
     'corsheaders',
     #...
@@ -79,6 +80,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #extensão do django interface
