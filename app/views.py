@@ -10,7 +10,7 @@ from authentication.models import User
 from rolepermissions.checkers import has_permission,has_role
 from .models import Produto,Categoria,Fabricante
 from backend.shortcuts import redirect_url
-from backend.roles import ProdutoManager
+from django.db.models import Q
 # Create your views here.
 
 class HomeView(LoginRequiredMixin,View):
@@ -30,25 +30,23 @@ class ProdutoListView(LoginRequiredMixin,View):
         user=request.user
         fabricante = request.GET.get('fabricante')
         categoria = request.GET.get('categoria')
-        produtos = Produto.objects.all()
+        produtos = Produto.objects.all() 
         if has_role(user, 'manager') or has_permission(user,'view_product'):
             
-            todos_produtos = []
-            if categoria:
-                categoria_id = Categoria.objects.filter(pk=int(categoria)).first().pk
-                for produto in produtos:
-                    if produto.categoria.pk == categoria_id:
-                        todos_produtos.append(produto)
+            if categoria or fabricante: 
+                query = Q() 
+                # &= é usado para adicionar uma condição a uma query
+                if categoria: 
+                    query &= Q(categoria__nome=categoria) 
+                if fabricante: 
+                    query &= Q(fabricante__nome=fabricante) 
+                if categoria and fabricante:
+                    query &= Q(categoria__nome=categoria,fabricante__nome=fabricante)
 
-            if fabricante:
-                fabricante_id=Fabricante.objects.filter(pk=int(fabricante)).first().pk
-                for produto in produtos:
-                    if produto.fabricante.pk == fabricante_id:
-                        todos_produtos.append(produto)
-            
+                produtos = Produto.objects.filter(query)
 
         context = {
-                    'produtos': todos_produtos if categoria or fabricante  else produtos,
+                    'produtos': produtos,
                     'categorias': Categoria.objects.all(),
                     'fabricantes': Fabricante.objects.all()
             }
